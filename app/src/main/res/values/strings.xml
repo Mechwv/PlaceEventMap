@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">PlaceEventMap</string>
+    <string name="place_title">Бар "Жирный кабан"</string>
+    <string name="place_geo">53.16720362247182, -3.140009059547356</string>
+    <string name="place_desc">Крутой британский бар</string>
+
 </resources>

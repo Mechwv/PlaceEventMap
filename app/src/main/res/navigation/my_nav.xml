@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_nav"
+    app:startDestination="@id/placesFragment">
+
+    <fragment
+        android:id="@+id/placesInfoFragment"
+        android:name="com.example.placeeventmap.presentation.places.PlacesInfoFragment"
+        android:label="fragment_places_info"
+        tools:layout="@layout/fragment_places_info" >
+        <action
+            android:id="@+id/action_placesInfoFragment_to_placesFragment"
+            app:destination="@id/placesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/placesFragment"
+        android:name="com.example.placeeventmap.presentation.places.PlacesListFragment"
+        android:label="PlacesFragment"
+        tools:layout="@layout/places_list_fragment">
+        <action
+            android:id="@+id/action_placesFragment_to_placesInfoFragment"
+            app:destination="@id/placesInfoFragment" />
+    </fragment>
+</navigation>
