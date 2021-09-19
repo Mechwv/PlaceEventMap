@@ -26,7 +26,7 @@ object RoomModule {
             AppDatabase.DATABASE_NAME
         )
             .fallbackToDestructiveMigration()
-            .createFromAsset("database/placeEventMap.db")
+//            .createFromAsset("database/placeEventMap.db")
             .build()
     }
 

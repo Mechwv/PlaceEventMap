@@ -51,11 +51,11 @@ class PlacesListFragment : Fragment() {
 
         binding.placesAddButton.setOnClickListener {
             viewModel.addPlace(Place(
+                0,
                 Random.nextDouble(360.0),
                 Random.nextDouble(360.0),
                 "CringePlace + ${Random.nextInt(1000)}",
                 "I have bouht + ${Random.nextInt(1000)} bottles of pepsi there"))
-            viewModel.getDBPlaces()
         }
 
         return binding.root

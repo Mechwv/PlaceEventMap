@@ -16,10 +16,7 @@ constructor(
     private val placeDao: PlaceDao
 ) : PlaceRepository {
     private val executorService: ExecutorService = Executors.newFixedThreadPool(4)
-    private val mainThreadHandler by lazy {
-        Handler(Looper.getMainLooper())
-    }
-//    private var places: LiveData<List<DBPlaceDTO>> = placeDao.getAll() as LiveData<List<DBPlaceDTO>>
+    private var places: LiveData<List<DBPlaceDTO>> = placeDao.getAll()
 
 
     override fun addPlace(place: Place) {
@@ -36,7 +33,7 @@ constructor(
 
     override fun deletePlace(place: Place) {
         executorService.execute {
-            placeDao.delete(DBPlaceDTO(place))
+            placeDao.delete(place as DBPlaceDTO)
         }
     }
 
@@ -46,12 +43,7 @@ constructor(
         }
     }
 
-    override fun getPlaces(callback: (List<Place>) -> Unit ) {
-        executorService.execute {
-            val placesDto = placeDao.getAll()
-            val places = placesDto.map { it.toPlace() }
-            Log.e("PlaceRep: ", places.toString())
-            mainThreadHandler.post { callback(places) }
-        }
+    override fun getPlaces(): LiveData<List<Place>> {
+        return places as LiveData<List<Place>>
     }
 }

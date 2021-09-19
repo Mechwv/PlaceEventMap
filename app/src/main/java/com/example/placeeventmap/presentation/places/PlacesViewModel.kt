@@ -1,12 +1,8 @@
 package com.example.placeeventmap.presentation.places
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.example.placeeventmap.domain.model.Place
-import com.example.placeeventmap.presentation.room.dto.DBPlaceDTO
 import com.example.placeeventmap.presentation.room.PlaceRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -16,19 +12,18 @@ class PlacesViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val repository: PlaceRepositoryImpl
 ) : ViewModel() {
-    private val _places = MutableLiveData<List<Place>>()
-    val places: LiveData<List<Place>>
-        get() = _places
+//    private val _places = MutableLiveData<List<Place>>()
+//    val places: LiveData<List<Place>>
+//        get() = _places
 
     fun getDBPlaces(): LiveData<List<Place>> {
-        val DBplaces = repository.getPlaces {
-            _places.value = it
-        }
-        return places
+        val a = repository.getPlaces()
+        Log.e("Repository: ", a.value.toString())
+        return a
     }
 
     fun addPlace(place: Place) {
-        Log.e("New Place: ", place.toString())
+//        Log.e("New Place: ", place.toString())
         repository.addPlace(place)
     }
 

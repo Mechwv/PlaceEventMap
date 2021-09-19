@@ -9,29 +9,34 @@ import com.example.placeeventmap.domain.model.Place
 data class DBPlaceDTO(
     @PrimaryKey(autoGenerate = true)
     var uid: Int,
-    @ColumnInfo(name = "location_latitude") var latitude: Double,
-    @ColumnInfo(name = "location_longtitude") var longtitude: Double,
-    @ColumnInfo(name = "location_name") var name: String,
-    @ColumnInfo(name = "location_description") var description: String? = null,
-) {
+    @ColumnInfo(name = "location_latitude") override var latitude: Double,
+    @ColumnInfo(name = "location_longtitude") override var longtitude: Double,
+    @ColumnInfo(name = "location_name") override var name: String,
+    @ColumnInfo(name = "location_description") override var description: String? = null,
+) : Place (
+    uid,
+    latitude,
+    longtitude,
+    name,
+    description) {
 
 
     constructor(place: Place) : this(
         place.id,
         place.latitude,
-        place.longitude,
+        place.longtitude,
         place.name,
         place.description
     )
 
     fun toPlace() : Place {
         val place = Place(
+            uid,
             latitude,
             longtitude,
             name,
             description
         )
-        place.id = uid
         return place
     }
 }
