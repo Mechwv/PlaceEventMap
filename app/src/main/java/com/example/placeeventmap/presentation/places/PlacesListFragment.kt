@@ -10,7 +10,10 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.placeeventmap.databinding.PlacesListFragmentBinding
+import com.example.placeeventmap.domain.model.Place
+import com.example.placeeventmap.presentation.room.dto.DBPlaceDTO
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.random.Random
 
 @AndroidEntryPoint
 class PlacesListFragment : Fragment() {
@@ -39,12 +42,22 @@ class PlacesListFragment : Fragment() {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-//                val position = viewHolder.adapterPosition
-//                viewModel.deletePatternInfo(
-//                    (binding.patternsRecyclerView.adapter as PatternsListAdapter).data[position]
-//                )
+                val position = viewHolder.adapterPosition
+                viewModel.deletePlace(
+                    (binding.placesRecyclerView.adapter as PlacesListAdapter).data[position]
+                )
             }
         }).attachToRecyclerView(binding.placesRecyclerView)
+
+        binding.placesAddButton.setOnClickListener {
+            viewModel.addPlace(Place(
+                Random.nextDouble(360.0),
+                Random.nextDouble(360.0),
+                "CringePlace + ${Random.nextInt(1000)}",
+                "I have bouht + ${Random.nextInt(1000)} bottles of pepsi there"))
+            viewModel.getDBPlaces()
+        }
+
         return binding.root
     }
 

@@ -1,5 +1,6 @@
 package com.example.placeeventmap.presentation.room
 
+import androidx.room.Delete
 import androidx.room.Insert
 
 interface BaseDao<T> {
@@ -15,9 +16,9 @@ interface BaseDao<T> {
 //    @Update
 //    suspend fun update(entities: List<T>)
 
-//    @Delete
-//    suspend fun delete(entity: T)
-//
-//    @Delete
-//    suspend fun delete(entities: List<T>)
+    @Delete
+    fun delete(entity: T)
+
+    @Delete
+    fun delete(entities: List<T>)
 }

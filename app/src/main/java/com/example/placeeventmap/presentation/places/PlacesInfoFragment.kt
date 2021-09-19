@@ -24,12 +24,10 @@ class PlacesInfoFragment : Fragment() {
         val view = binding.root
 
         binding.textView1.setOnClickListener {
-            Navigation.findNavController(view).navigate(R.id.action_placesInfoFragment_to_placesFragment)
+//            Navigation.findNavController(view).navigate(R.id.action_placesInfoFragment_to_placesFragment)
             Log.e("click", "PlacesInfoFragment")
         }
 
         return view
     }
-
-
 }

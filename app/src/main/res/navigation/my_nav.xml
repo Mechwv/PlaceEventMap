@@ -9,18 +9,10 @@
         android:id="@+id/placesInfoFragment"
         android:name="com.example.placeeventmap.presentation.places.PlacesInfoFragment"
         android:label="fragment_places_info"
-        tools:layout="@layout/fragment_places_info" >
-        <action
-            android:id="@+id/action_placesInfoFragment_to_placesFragment"
-            app:destination="@id/placesFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_places_info" />
     <fragment
         android:id="@+id/placesFragment"
         android:name="com.example.placeeventmap.presentation.places.PlacesListFragment"
         android:label="PlacesFragment"
-        tools:layout="@layout/places_list_fragment">
-        <action
-            android:id="@+id/action_placesFragment_to_placesInfoFragment"
-            app:destination="@id/placesInfoFragment" />
-    </fragment>
+        tools:layout="@layout/places_list_fragment"/>
 </navigation>

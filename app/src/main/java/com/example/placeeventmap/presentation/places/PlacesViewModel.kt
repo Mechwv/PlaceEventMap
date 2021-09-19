@@ -22,15 +22,23 @@ class PlacesViewModel @Inject constructor(
 
     fun getDBPlaces(): LiveData<List<Place>> {
         val DBplaces = repository.getPlaces {
-            Log.e("PlaceViewModel: ", it.toString())
             _places.value = it
         }
-
         return places
     }
 
-    fun addPlace(place: DBPlaceDTO) {
+    fun addPlace(place: Place) {
+        Log.e("New Place: ", place.toString())
         repository.addPlace(place)
+    }
+
+    fun deletePlace(place: Place) {
+        Log.e("Place to delete: ", place.toString())
+        repository.deletePlace(place)
+    }
+
+    fun deletePlaces(place: List<Place>) {
+        repository.deletePlaces(place)
     }
 
 }
