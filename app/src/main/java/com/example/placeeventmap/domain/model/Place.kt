@@ -6,6 +6,4 @@ open class Place(
     open var longtitude: Double,
     open var name: String,
     open var description: String?,
-) {
-
-}
+)

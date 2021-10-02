@@ -3,5 +3,16 @@
     <string name="place_title">Бар "Жирный кабан"</string>
     <string name="place_geo">53.16720362247182, -3.140009059547356</string>
     <string name="place_desc">Крутой британский бар</string>
+    <string name="enter_description">Введите описание события</string>
+    <string name="enter_end_time">Время окончания события</string>
+    <string name="enter_start_time">Время начала события</string>
+    <string name="enter_party_name">Введите название события*</string>
+    <string name="add_party">Добавить новое событие</string>
+    <string name="party_images">Фотографии события</string>
+    <string name="description">Описание:</string>
+    <string name="placement">Местопроведение события:</string>
+    <string name="timing">Время проведения события</string>
+    <string name="start_time">Время начала:</string>
+    <string name="end_time">Время окончания:</string>
 
 </resources>

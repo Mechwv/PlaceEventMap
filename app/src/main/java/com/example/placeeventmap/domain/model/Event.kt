@@ -1,10 +1,11 @@
 package com.example.placeeventmap.domain.model
 
-import java.sql.Timestamp
+import java.time.LocalDateTime
 
-data class Event(
-    var name: String,
-    var description: String? = null,
-    var startTime: Timestamp,
-    var locationId : Int
+open class Event(
+    open var id: Int,
+    open var name: String,
+    open var description: String? = null,
+    open var startTime: String,
+    open var locationId : Int
 )

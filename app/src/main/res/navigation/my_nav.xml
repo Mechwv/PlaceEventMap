@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/my_nav"
-    app:startDestination="@id/placesFragment">
+    app:startDestination="@id/eventAddFragment">
 
     <fragment
         android:id="@+id/placesInfoFragment"
@@ -15,4 +15,9 @@
         android:name="com.example.placeeventmap.presentation.places.PlacesListFragment"
         android:label="PlacesFragment"
         tools:layout="@layout/places_list_fragment"/>
+    <fragment
+        android:id="@+id/eventAddFragment"
+        android:name="com.example.placeeventmap.presentation.events.EventAddFragment"
+        android:label="EventAddFragment"
+        tools:layout="@layout/add_event_fragment"/>
 </navigation>
