@@ -72,9 +72,8 @@ class PlacesListFragment : Fragment(), PlacesListAdapter.onItemClickListener {
     }
 
     override fun onItemClick(position: Int) {
-        val action = PlacesListFragmentDirections.actionPlacesFragmentToEventAddFragment(
-                (((binding.placesRecyclerView.adapter as PlacesListAdapter).data[position]) as DBPlaceDTO).uid
-        )
+        val uid = (((binding.placesRecyclerView.adapter as PlacesListAdapter).data[position]) as DBPlaceDTO).uid
+        val action = PlacesListFragmentDirections.actionPlacesFragmentToEventAddFragment(uid)
         findNavController().navigate(action)
     }
 

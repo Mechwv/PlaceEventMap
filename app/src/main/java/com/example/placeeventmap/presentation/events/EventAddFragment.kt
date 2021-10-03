@@ -19,7 +19,9 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.navArgs
 import com.example.placeeventmap.databinding.AddEventFragmentBinding
+import com.example.placeeventmap.presentation.places.PlacesListFragment
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
@@ -154,7 +156,7 @@ class EventAddFragment: Fragment() {
                 val calID: Long = cur.getLong(PROJECTION_CALENDAR_ID)
                 val displayName: String = cur.getString(PROJECTION_TITLE)
                 val desc: String = cur.getString(PROJECTION_DESCRIPTION)
-                return "$calID  +  $displayName  +  $desc"
+                return "$calID  +  $displayName  +  $desc + Place_id: ${arguments?.get("place_id")}"
             }
         }
        return ""
