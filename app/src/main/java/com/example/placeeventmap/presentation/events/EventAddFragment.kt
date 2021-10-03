@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.CalendarContract
+import android.provider.CalendarContract.CalendarCache.TIMEZONE_TYPE_AUTO
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -119,7 +120,7 @@ class EventAddFragment: Fragment() {
             put(CalendarContract.Events.TITLE, "Dance club")
             put(CalendarContract.Events.DESCRIPTION, "Group workout")
             put(CalendarContract.Events.CALENDAR_ID, 3)
-            put(CalendarContract.Events.EVENT_TIMEZONE, "America/Los_Angeles")
+            put(CalendarContract.Events.EVENT_TIMEZONE, TIMEZONE_TYPE_AUTO)
         }
         runBlocking {
             launch {

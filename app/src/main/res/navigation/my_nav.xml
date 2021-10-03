@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_placesFragment_to_placesInfoFragment2"
             app:destination="@id/placesInfoFragment2" />
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="https://placeevent.map/places" />
     </fragment>
     <fragment
         android:id="@+id/eventAddFragment"
@@ -34,5 +37,8 @@
         <argument
             android:name="place_id"
             app:argType="integer" />
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="https://placeevent.map/places/{place_id}" />
     </fragment>
 </navigation>

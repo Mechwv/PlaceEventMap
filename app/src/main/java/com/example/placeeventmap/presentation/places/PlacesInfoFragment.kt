@@ -1,5 +1,6 @@
 package com.example.placeeventmap.presentation.places
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -34,6 +35,19 @@ class PlacesInfoFragment : Fragment() {
             val uid = arguments?.get("place_id") as Int
             val action = PlacesInfoFragmentDirections.actionPlacesInfoFragment2ToEventAddFragment(uid)
             findNavController().navigate(action)
+        }
+
+        binding.share.setOnClickListener {
+            val sendIntent = Intent()
+            val uid = arguments?.get("place_id") as Int
+            sendIntent.action = Intent.ACTION_SEND
+            sendIntent.putExtra(
+                Intent.EXTRA_TEXT,
+                "https://placeevent.map/places/$uid"
+            )
+            sendIntent.type = "text/plain"
+            val shareIntent: Intent = Intent.createChooser(sendIntent, null)
+            binding.root.context.startActivity(shareIntent)
         }
 
         return binding.root
