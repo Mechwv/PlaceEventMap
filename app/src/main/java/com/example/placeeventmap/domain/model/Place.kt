@@ -6,8 +6,5 @@ open class Place(
     open var longtitude: Double,
     open var name: String,
     open var description: String?,
-) {
-    constructor(latitude: Double, longtitude: Double, name: String) : this(0, latitude, longtitude, name, null) {
-
-    }
-}
+    open var event_id: Long?,
+)

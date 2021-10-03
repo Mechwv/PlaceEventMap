@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.provider.CalendarContract.CalendarCache.TIMEZONE_TYPE_AUTO
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,18 +21,23 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.example.placeeventmap.databinding.AddEventFragmentBinding
+import com.example.placeeventmap.domain.model.Place
 import com.example.placeeventmap.presentation.places.PlacesListFragment
+import com.example.placeeventmap.presentation.room.dto.DBPlaceDTO
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
+import kotlin.random.Random
 
-
+@AndroidEntryPoint
 class EventAddFragment: Fragment() {
-    private lateinit var viewModel: EventAddViewModel
+    private val viewModel: EventAddViewModel by viewModels()
     private lateinit var binding: AddEventFragmentBinding
 
     var temp: LocalDateTime? = null
@@ -46,7 +52,8 @@ class EventAddFragment: Fragment() {
                 allAreGranted = allAreGranted && b
             }
             if(allAreGranted) {
-                useCalendar()
+                eventId = CalendarHandler.useCalendar(calendar, requireContext())
+                viewModel.updatePlace(arguments?.get("place_id") as Int, eventId!!)
             }
         }
 
@@ -104,63 +111,18 @@ class EventAddFragment: Fragment() {
         }
 
         binding.receive.setOnClickListener {
-            Toast.makeText(
-                context,
-                eventId?.let { it1 -> getEvent(it1) },
-                Toast.LENGTH_SHORT
-            ).show()
+            viewModel.getPlace(arguments?.get("place_id") as Int).observe(viewLifecycleOwner, { place ->
+                val place1 = place as DBPlaceDTO
+                eventId = place1.real_event_id
+                Toast.makeText(
+                    context,
+                    eventId?.let { it1 -> CalendarHandler.getEvent(it1, requireContext()) + "Place_id: ${arguments?.get("place_id")}" },
+                    Toast.LENGTH_SHORT
+                ).show()
+            })
         }
+
         return binding.root
-    }
-
-    private fun useCalendar() {
-        val datetime = ContentValues().apply {
-            put(CalendarContract.Events.DTSTART, calendar.timeInMillis)
-            put(CalendarContract.Events.DTEND,calendar.timeInMillis + 60000*60)
-            put(CalendarContract.Events.TITLE, "Dance club")
-            put(CalendarContract.Events.DESCRIPTION, "Group workout")
-            put(CalendarContract.Events.CALENDAR_ID, 3)
-            put(CalendarContract.Events.EVENT_TIMEZONE, TIMEZONE_TYPE_AUTO)
-        }
-        runBlocking {
-            launch {
-                val contentResolver = context?.contentResolver
-                val uri: Uri? = contentResolver?.insert(CalendarContract.Events.CONTENT_URI, datetime)
-                eventId = uri?.lastPathSegment?.toLong()
-            }
-        }
-    }
-
-    private fun getEvent(eventID: Long): String {
-//        val uri: Uri = CalendarContract.Calendars.CONTENT_URI
-        val uri: Uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID)
-        val contentResolver = context?.contentResolver
-
-        val EVENT_PROJECTION: Array<String> = arrayOf(
-            CalendarContract.Events.CALENDAR_ID,                     // 0
-            CalendarContract.Events.TITLE,            // 1
-            CalendarContract.Events.DESCRIPTION,   // 2
-            CalendarContract.Calendars.OWNER_ACCOUNT            // 3
-        )
-
-        val PROJECTION_CALENDAR_ID: Int = 0
-        val PROJECTION_TITLE: Int = 1
-        val PROJECTION_DESCRIPTION: Int = 2
-        val PROJECTION_OWNER_ACCOUNT_INDEX: Int = 3
-
-//        val selection: String = "_id = ?"
-//        val selectionArgs: Array<String> = arrayOf(eventID.toString())
-//        val cur: Cursor? = contentResolver?.query(uri, EVENT_PROJECTION, selection, selectionArgs, null)
-        val cur: Cursor? = contentResolver?.query(uri, EVENT_PROJECTION, "", arrayOf(), null)
-        if (cur != null) {
-            while (cur.moveToNext()) {
-                val calID: Long = cur.getLong(PROJECTION_CALENDAR_ID)
-                val displayName: String = cur.getString(PROJECTION_TITLE)
-                val desc: String = cur.getString(PROJECTION_DESCRIPTION)
-                return "$calID  +  $displayName  +  $desc + Place_id: ${arguments?.get("place_id")}"
-            }
-        }
-       return ""
     }
 
     private fun goToCalendarIntent(eventID: Long){

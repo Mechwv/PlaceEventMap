@@ -2,6 +2,7 @@ package com.example.placeeventmap.presentation.room
 
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 
 interface BaseDao<T> {
     @Insert

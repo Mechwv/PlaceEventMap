@@ -25,6 +25,13 @@ constructor(
         }
     }
 
+    override fun updatePlace(id: Int, event_id: Long) {
+        executorService.execute {
+            placeDao.updateOne(id, event_id)
+        }
+    }
+
+
     override fun getPlace(id: Int): LiveData<Place> {
         return placeDao.getOne(id) as LiveData<Place>
     }

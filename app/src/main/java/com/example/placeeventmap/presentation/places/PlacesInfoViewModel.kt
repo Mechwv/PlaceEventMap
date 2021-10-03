@@ -16,7 +16,13 @@ class PlacesInfoViewModel @Inject constructor(
 ) : ViewModel() {
 
     fun getPlace(id: Int): LiveData<Place> {
-        return repository.getPlace(id)
+        val place = repository.getPlace(id)
+            Log.e("Place : ", place.value.toString())
+        return place
+    }
+
+    fun addPlace(place: Place) {
+        repository.addPlace(place)
     }
 
 }

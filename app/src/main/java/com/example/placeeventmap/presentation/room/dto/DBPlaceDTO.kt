@@ -19,7 +19,8 @@ data class DBPlaceDTO(
     latitude,
     longtitude,
     name,
-    description) {
+    description,
+    real_event_id) {
 
 
     constructor(place: Place) : this(
