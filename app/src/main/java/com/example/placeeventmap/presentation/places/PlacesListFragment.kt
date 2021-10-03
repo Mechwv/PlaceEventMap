@@ -5,7 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlin.random.Random
 
 @AndroidEntryPoint
-class PlacesListFragment : Fragment() {
+class PlacesListFragment : Fragment(), PlacesListAdapter.onItemClickListener {
 
     private lateinit var binding: PlacesListFragmentBinding
 
@@ -64,9 +66,16 @@ class PlacesListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.getDBPlaces().observe(viewLifecycleOwner, {
-            binding.placesRecyclerView.adapter = PlacesListAdapter(it!!)
+            binding.placesRecyclerView.adapter = PlacesListAdapter(it!!, this)
         })
 
+    }
+
+    override fun onItemClick(position: Int) {
+        val action = PlacesListFragmentDirections.actionPlacesFragmentToEventAddFragment(
+                (((binding.placesRecyclerView.adapter as PlacesListAdapter).data[position]) as DBPlaceDTO).uid
+        )
+        findNavController().navigate(action)
     }
 
 

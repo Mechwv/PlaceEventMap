@@ -3,8 +3,10 @@ package com.example.placeeventmap.presentation.events
 import android.Manifest
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.ContentUris
 import android.content.ContentValues
-import android.content.pm.PackageManager
+import android.content.Intent
+import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -16,20 +18,13 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.placeeventmap.databinding.AddEventFragmentBinding
-import java.text.SimpleDateFormat
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
-import android.content.ContentUris
-
-import android.content.ContentResolver
-import android.database.Cursor
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 
 class EventAddFragment: Fragment() {
@@ -61,19 +56,6 @@ class EventAddFragment: Fragment() {
 
         binding = AddEventFragmentBinding.inflate(layoutInflater, container, false)
 
-        binding.addButton.setOnClickListener {
-            Toast.makeText(
-                context,
-                temp?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")),
-                Toast.LENGTH_SHORT
-            ).show()
-            val appPerms = arrayOf(
-                Manifest.permission.READ_CALENDAR,
-                Manifest.permission.WRITE_CALENDAR,
-            )
-            activityResultLauncher.launch(appPerms)
-        }
-
         val dateSetListener =
             DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
                 calendar.set(Calendar.YEAR, year)
@@ -86,6 +68,19 @@ class EventAddFragment: Fragment() {
                 calendar.set(Calendar.HOUR_OF_DAY, hour)
                 calendar.set(Calendar.MINUTE, minute)
             }
+
+        binding.addButton.setOnClickListener {
+            Toast.makeText(
+                context,
+                temp?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")),
+                Toast.LENGTH_SHORT
+            ).show()
+            val appPerms = arrayOf(
+                Manifest.permission.READ_CALENDAR,
+                Manifest.permission.WRITE_CALENDAR,
+            )
+            activityResultLauncher.launch(appPerms)
+        }
 
         binding.pickTime.setOnClickListener {
 
@@ -101,10 +96,14 @@ class EventAddFragment: Fragment() {
             temp = LocalDateTime.ofInstant(calendar.toInstant(), calendar.timeZone.toZoneId())
         }
 
+        binding.watch.setOnClickListener {
+            eventId?.let { it1 -> goToCalendarIntent(it1) }
+        }
+
         binding.receive.setOnClickListener {
             Toast.makeText(
                 context,
-                getEvent(eventId!!),
+                eventId?.let { it1 -> getEvent(it1) },
                 Toast.LENGTH_SHORT
             ).show()
         }
@@ -137,13 +136,13 @@ class EventAddFragment: Fragment() {
         val EVENT_PROJECTION: Array<String> = arrayOf(
             CalendarContract.Events.CALENDAR_ID,                     // 0
             CalendarContract.Events.TITLE,            // 1
-            CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,   // 2
+            CalendarContract.Events.DESCRIPTION,   // 2
             CalendarContract.Calendars.OWNER_ACCOUNT            // 3
         )
 
         val PROJECTION_CALENDAR_ID: Int = 0
         val PROJECTION_TITLE: Int = 1
-        val PROJECTION_DISPLAY_NAME_INDEX: Int = 2
+        val PROJECTION_DESCRIPTION: Int = 2
         val PROJECTION_OWNER_ACCOUNT_INDEX: Int = 3
 
 //        val selection: String = "_id = ?"
@@ -154,16 +153,16 @@ class EventAddFragment: Fragment() {
             while (cur.moveToNext()) {
                 val calID: Long = cur.getLong(PROJECTION_CALENDAR_ID)
                 val displayName: String = cur.getString(PROJECTION_TITLE)
-                return "$calID   +   $displayName"
+                val desc: String = cur.getString(PROJECTION_DESCRIPTION)
+                return "$calID  +  $displayName  +  $desc"
             }
         }
        return ""
     }
 
-    private fun getEvent1(eventID: Long){
-//        val uri: Uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID)
-//        val intent = Intent(Intent.ACTION_VIEW).setData(uri)
-//        startActivity(intent)
-
+    private fun goToCalendarIntent(eventID: Long){
+        val uri: Uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID)
+        val intent = Intent(Intent.ACTION_VIEW).setData(uri)
+        startActivity(intent)
     }
 }

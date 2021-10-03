@@ -41,29 +41,29 @@
             </LinearLayout>
 
 
-            <EditText
-                android:id="@+id/party_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+<!--            <EditText-->
+<!--                android:id="@+id/party_name"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
 
-                android:layout_marginVertical="@dimen/normalMargin"
-                android:hint="@string/enter_party_name"
+<!--                android:layout_marginVertical="@dimen/normalMargin"-->
+<!--                android:hint="@string/enter_party_name"-->
 
-                android:textSize="20sp"
-                android:autofillHints="@string/enter_party_name"
-                android:inputType="text" />
+<!--                android:textSize="20sp"-->
+<!--                android:autofillHints="@string/enter_party_name"-->
+<!--                android:inputType="text" />-->
 
-            <TextView
-                android:id="@+id/dateTime"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+<!--            <TextView-->
+<!--                android:id="@+id/dateTime"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
 
-                android:layout_marginVertical="@dimen/normalMargin"
-                android:autofillHints="@string/enter_party_name"
+<!--                android:layout_marginVertical="@dimen/normalMargin"-->
+<!--                android:autofillHints="@string/enter_party_name"-->
 
-                android:hint="время события"
-                android:inputType="text"
-                android:textSize="20sp" />
+<!--                android:hint="время события"-->
+<!--                android:inputType="text"-->
+<!--                android:textSize="20sp" />-->
 
             <Button
                 android:id="@+id/pickTime"
@@ -71,27 +71,33 @@
                 android:layout_height="wrap_content"
                 android:text="Выбрать дату и время" />
 
-            <Button
-                android:id="@+id/receive"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Получить событие" />
+<!--            <EditText-->
+<!--                android:id="@+id/party_description"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
 
-            <EditText
-                android:id="@+id/party_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+<!--                android:layout_marginBottom="@dimen/halfMargin"-->
+<!--                android:hint="@string/enter_description"-->
 
-                android:layout_marginBottom="@dimen/halfMargin"
-                android:hint="@string/enter_description"
-
-                android:inputType="textMultiLine"/>
+<!--                android:inputType="textMultiLine"/>-->
 
             <Button
                 android:id="@+id/add_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/add_party" />
+
+            <Button
+                android:id="@+id/receive"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Получить событие" />
+
+            <Button
+                android:id="@+id/watch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Посмотреть в календаре" />
 
         </LinearLayout>
     </ScrollView>

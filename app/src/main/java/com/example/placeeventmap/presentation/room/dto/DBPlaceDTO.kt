@@ -8,7 +8,7 @@ import com.example.placeeventmap.domain.model.Place
 @Entity(tableName = "places")
 data class DBPlaceDTO(
     @PrimaryKey(autoGenerate = true)
-    var uid: Int,
+    val uid: Int,
     @ColumnInfo(name = "location_latitude") override var latitude: Double,
     @ColumnInfo(name = "location_longtitude") override var longtitude: Double,
     @ColumnInfo(name = "location_name") override var name: String,
@@ -29,15 +29,4 @@ data class DBPlaceDTO(
         place.name,
         place.description
     )
-
-    fun toPlace() : Place {
-        val place = Place(
-            uid,
-            latitude,
-            longtitude,
-            name,
-            description
-        )
-        return place
-    }
 }
