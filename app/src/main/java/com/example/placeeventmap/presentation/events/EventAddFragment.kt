@@ -1,25 +1,56 @@
 package com.example.placeeventmap.presentation.events
 
+import android.Manifest
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.ContentValues
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.CalendarContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.placeeventmap.databinding.AddEventFragmentBinding
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
+import android.content.ContentUris
+
+import android.content.ContentResolver
+import android.database.Cursor
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+
 
 class EventAddFragment: Fragment() {
     private lateinit var viewModel: EventAddViewModel
     private lateinit var binding: AddEventFragmentBinding
+
     var temp: LocalDateTime? = null
+    val calendar = Calendar.getInstance()
+    var eventId: Long? = null
+
+    private var activityResultLauncher: ActivityResultLauncher<Array<String>> =
+        registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()) { result ->
+            var allAreGranted = true
+            for(b in result.values) {
+                allAreGranted = allAreGranted && b
+            }
+            if(allAreGranted) {
+                useCalendar()
+            }
+        }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -27,10 +58,20 @@ class EventAddFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val calendar = Calendar.getInstance()
+
         binding = AddEventFragmentBinding.inflate(layoutInflater, container, false)
+
         binding.addButton.setOnClickListener {
-            Toast.makeText(context, temp?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                context,
+                temp?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")),
+                Toast.LENGTH_SHORT
+            ).show()
+            val appPerms = arrayOf(
+                Manifest.permission.READ_CALENDAR,
+                Manifest.permission.WRITE_CALENDAR,
+            )
+            activityResultLauncher.launch(appPerms)
         }
 
         val dateSetListener =
@@ -46,7 +87,6 @@ class EventAddFragment: Fragment() {
                 calendar.set(Calendar.MINUTE, minute)
             }
 
-
         binding.pickTime.setOnClickListener {
 
             TimePickerDialog(requireContext(), timeSetListener,
@@ -60,7 +100,70 @@ class EventAddFragment: Fragment() {
             ).show()
             temp = LocalDateTime.ofInstant(calendar.toInstant(), calendar.timeZone.toZoneId())
         }
+
+        binding.receive.setOnClickListener {
+            Toast.makeText(
+                context,
+                getEvent(eventId!!),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
         return binding.root
     }
 
+    private fun useCalendar() {
+        val datetime = ContentValues().apply {
+            put(CalendarContract.Events.DTSTART, calendar.timeInMillis)
+            put(CalendarContract.Events.DTEND,calendar.timeInMillis + 60000*60)
+            put(CalendarContract.Events.TITLE, "Dance club")
+            put(CalendarContract.Events.DESCRIPTION, "Group workout")
+            put(CalendarContract.Events.CALENDAR_ID, 3)
+            put(CalendarContract.Events.EVENT_TIMEZONE, "America/Los_Angeles")
+        }
+        runBlocking {
+            launch {
+                val contentResolver = context?.contentResolver
+                val uri: Uri? = contentResolver?.insert(CalendarContract.Events.CONTENT_URI, datetime)
+                eventId = uri?.lastPathSegment?.toLong()
+            }
+        }
+    }
+
+    private fun getEvent(eventID: Long): String {
+//        val uri: Uri = CalendarContract.Calendars.CONTENT_URI
+        val uri: Uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID)
+        val contentResolver = context?.contentResolver
+
+        val EVENT_PROJECTION: Array<String> = arrayOf(
+            CalendarContract.Events.CALENDAR_ID,                     // 0
+            CalendarContract.Events.TITLE,            // 1
+            CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,   // 2
+            CalendarContract.Calendars.OWNER_ACCOUNT            // 3
+        )
+
+        val PROJECTION_CALENDAR_ID: Int = 0
+        val PROJECTION_TITLE: Int = 1
+        val PROJECTION_DISPLAY_NAME_INDEX: Int = 2
+        val PROJECTION_OWNER_ACCOUNT_INDEX: Int = 3
+
+//        val selection: String = "_id = ?"
+//        val selectionArgs: Array<String> = arrayOf(eventID.toString())
+//        val cur: Cursor? = contentResolver?.query(uri, EVENT_PROJECTION, selection, selectionArgs, null)
+        val cur: Cursor? = contentResolver?.query(uri, EVENT_PROJECTION, "", arrayOf(), null)
+        if (cur != null) {
+            while (cur.moveToNext()) {
+                val calID: Long = cur.getLong(PROJECTION_CALENDAR_ID)
+                val displayName: String = cur.getString(PROJECTION_TITLE)
+                return "$calID   +   $displayName"
+            }
+        }
+       return ""
+    }
+
+    private fun getEvent1(eventID: Long){
+//        val uri: Uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID)
+//        val intent = Intent(Intent.ACTION_VIEW).setData(uri)
+//        startActivity(intent)
+
+    }
 }

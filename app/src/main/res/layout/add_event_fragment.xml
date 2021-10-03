@@ -71,6 +71,12 @@
                 android:layout_height="wrap_content"
                 android:text="Выбрать дату и время" />
 
+            <Button
+                android:id="@+id/receive"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Получить событие" />
+
             <EditText
                 android:id="@+id/party_description"
                 android:layout_width="match_parent"
