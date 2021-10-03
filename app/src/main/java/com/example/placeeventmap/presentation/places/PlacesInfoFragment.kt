@@ -6,14 +6,23 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.example.placeeventmap.R
 import com.example.placeeventmap.databinding.FragmentPlacesInfoBinding
+import com.example.placeeventmap.presentation.room.dto.DBPlaceDTO
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
-
+@AndroidEntryPoint
 class PlacesInfoFragment : Fragment() {
 
     private lateinit var binding: FragmentPlacesInfoBinding
+    private val viewModel: PlacesInfoViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -21,13 +30,21 @@ class PlacesInfoFragment : Fragment() {
     ): View? {
         binding = FragmentPlacesInfoBinding.inflate(layoutInflater, container, false)
 
-        val view = binding.root
-
-        binding.textView1.setOnClickListener {
-//            Navigation.findNavController(view).navigate(R.id.action_placesInfoFragment_to_placesFragment)
-            Log.e("click", "PlacesInfoFragment")
+        binding.watch.setOnClickListener {
+            val uid = arguments?.get("place_id") as Int
+            val action = PlacesInfoFragmentDirections.actionPlacesInfoFragment2ToEventAddFragment(uid)
+            findNavController().navigate(action)
         }
 
-        return view
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.getPlace(arguments?.get("place_id") as Int).observe(viewLifecycleOwner, { place ->
+            binding.placeName.setText(place.name)
+            binding.placeLat.setText(place.latitude.toString())
+            binding.placeLong.setText(place.longtitude.toString())
+        })
     }
 }

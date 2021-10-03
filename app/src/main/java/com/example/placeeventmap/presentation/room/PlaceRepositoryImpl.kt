@@ -25,6 +25,10 @@ constructor(
         }
     }
 
+    override fun getPlace(id: Int): LiveData<Place> {
+        return placeDao.getOne(id) as LiveData<Place>
+    }
+
     override fun addPlaces(place: List<Place>) {
         executorService.execute {
             placeDao.insert(place.map { DBPlaceDTO(it) })

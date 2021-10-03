@@ -4,22 +4,60 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#4CAF50">
+    android:background="#FFFFFF">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="99dp"
-        android:layout_height="146dp"
-        android:layout_marginStart="140dp"
-        android:layout_marginTop="325dp"
-        android:layout_marginEnd="140dp"
-        android:layout_marginBottom="387dp"
-        android:text="1"
-        android:textSize="120sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/normalMargin">
+
+        <EditText
+            android:id="@+id/place_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginVertical="@dimen/normalMargin"
+            android:hint="название места"
+
+            android:textSize="20sp"
+            android:inputType="text" />
+
+            <EditText
+                android:id="@+id/place_lat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_marginVertical="@dimen/normalMargin"
+                android:hint="latitude"
+
+                android:textSize="20sp"
+                android:autofillHints="@string/enter_party_name"
+                android:inputType="text" />
+
+            <EditText
+                android:id="@+id/place_long"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_marginVertical="@dimen/normalMargin"
+                android:hint="longtitude"
+
+                android:textSize="20sp"
+                android:autofillHints="@string/enter_party_name"
+                android:inputType="text" />
+
+            <Button
+                android:id="@+id/watch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Посмотреть события" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

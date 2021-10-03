@@ -9,6 +9,9 @@ import com.example.placeeventmap.presentation.room.BaseDao
 @Dao
 abstract class  PlaceDao : BaseDao<DBPlaceDTO> {
 
+    @Query("SELECT * FROM places where uid = :id")
+    abstract fun getOne(id: Int): LiveData<DBPlaceDTO>
+
     @Query("SELECT * FROM places")
     abstract fun getAll(): LiveData<List<DBPlaceDTO>>
 }

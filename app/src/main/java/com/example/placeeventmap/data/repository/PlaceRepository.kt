@@ -6,6 +6,7 @@ import com.example.placeeventmap.presentation.room.dto.DBPlaceDTO
 
 interface PlaceRepository {
     fun addPlace(place: Place)
+    fun getPlace(id: Int): LiveData<Place>
     fun getPlaces(): LiveData<List<Place>>
     fun addPlaces(place: List<Place>)
     fun deletePlace(place: Place)

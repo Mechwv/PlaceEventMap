@@ -6,24 +6,31 @@
     app:startDestination="@id/placesFragment">
 
     <fragment
-        android:id="@+id/placesInfoFragment"
-        android:name="com.example.placeeventmap.presentation.places.PlacesInfoFragment"
-        android:label="fragment_places_info"
-        tools:layout="@layout/fragment_places_info" />
-    <fragment
         android:id="@+id/placesFragment"
         android:name="com.example.placeeventmap.presentation.places.PlacesListFragment"
         android:label="PlacesFragment"
         tools:layout="@layout/places_list_fragment">
         <action
-            android:id="@+id/action_placesFragment_to_eventAddFragment"
-            app:destination="@id/eventAddFragment" />
+            android:id="@+id/action_placesFragment_to_placesInfoFragment2"
+            app:destination="@id/placesInfoFragment2" />
     </fragment>
     <fragment
         android:id="@+id/eventAddFragment"
         android:name="com.example.placeeventmap.presentation.events.EventAddFragment"
         android:label="EventAddFragment"
         tools:layout="@layout/add_event_fragment">
+        <argument
+            android:name="place_id"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/placesInfoFragment2"
+        android:name="com.example.placeeventmap.presentation.places.PlacesInfoFragment"
+        android:label="PlacesInfoFragment"
+        tools:layout="@layout/fragment_places_info">
+        <action
+            android:id="@+id/action_placesInfoFragment2_to_eventAddFragment"
+            app:destination="@id/eventAddFragment" />
         <argument
             android:name="place_id"
             app:argType="integer" />

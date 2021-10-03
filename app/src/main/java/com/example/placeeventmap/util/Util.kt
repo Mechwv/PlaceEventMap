@@ -1,9 +1,23 @@
 package com.example.placeeventmap.util
 
 import android.provider.CalendarContract
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 class Util {
+
     companion object {
+
+        fun<T: Any> ioThenMain(work: suspend (() -> T?), callback: ((T?)->Unit)) =
+            CoroutineScope(Dispatchers.Main).launch {
+                val data = CoroutineScope(Dispatchers.IO).async  rt@{
+                    return@rt work()
+                }.await()
+                callback(data)
+            }
+
         // Permissions constants
         const val CALENDAR_PERMISSIONS: Int = 0
 
