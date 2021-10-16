@@ -16,6 +16,18 @@
         <deepLink
             android:id="@+id/deepLink"
             app:uri="https://placeevent.map/places" />
+        <action
+            android:id="@+id/action_placesFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.example.placeeventmap.presentation.map.MapFragment"
+        android:label="MapFragment"
+        tools:layout="@layout/map_fragment">
+        <argument
+            android:name="place_id"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/eventAddFragment"

@@ -54,6 +54,10 @@ dependencies {
     //fragment
     implementation 'androidx.fragment:fragment-ktx:1.4.0-alpha10'
 
+    // Облегчённая библиотека, содержит только карту, слой пробок,
+    // LocationManager, UserLocationLayer и возможность скачивать оффлайн карты (только в платной версии).
+    implementation 'com.yandex.android:maps.mobile:4.0.0-lite'
+
 
     // material design
     implementation 'com.google.android.material:material:1.4.0'
