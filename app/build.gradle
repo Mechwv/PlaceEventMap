@@ -6,10 +6,16 @@ plugins {
     id 'androidx.navigation.safeargs'
 }
 
+def apikeyPropertiesFile = rootProject.file("apikey.properties")
+def apikeyProperties = new Properties()
+apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
+
 android {
-    compileSdk 31
 
     defaultConfig {
+        compileSdk 31
+        buildConfigField("String", "YANDEX_KEY", apikeyProperties['YANDEX_KEY'])
+
         applicationId "com.example.placeeventmap"
         minSdk 23
         targetSdk 31
