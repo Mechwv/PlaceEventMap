@@ -9,11 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
-import com.example.placeeventmap.R
 import com.example.placeeventmap.databinding.FragmentPlacesInfoBinding
-import com.example.placeeventmap.presentation.room.dto.DBPlaceDTO
+import com.example.placeeventmap.presentation.retrofit.Common
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import java.lang.Exception
@@ -59,7 +57,7 @@ class PlacesInfoFragment : Fragment() {
         Toast.makeText(context, "${place.latitude},${place.longtitude}", Toast.LENGTH_SHORT).show()
             GlobalScope.launch {
                 try {
-                    val place1 = viewModel.getPlaceName(place)
+                    val place1 = Common.getPlaceNameWrap(place)
                     MainScope().launch {
                         binding.placeName.setText(place1)
                         binding.placeLat.setText(place.latitude.toString())

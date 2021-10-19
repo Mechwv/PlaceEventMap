@@ -1,4 +1,4 @@
-package com.example.placeeventmap.util.retrofit
+package com.example.placeeventmap.presentation.retrofit
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

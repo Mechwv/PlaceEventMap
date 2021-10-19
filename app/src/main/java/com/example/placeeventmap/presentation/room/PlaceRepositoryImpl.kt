@@ -1,8 +1,5 @@
 package com.example.placeeventmap.presentation.room
 
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.placeeventmap.presentation.room.dto.DBPlaceDTO
 import com.example.placeeventmap.presentation.room.dao.PlaceDao
@@ -25,12 +22,17 @@ constructor(
         }
     }
 
-    override fun updatePlace(id: Int, event_id: Long) {
+    override fun updatePlaceEvent(id: Int, event_id: Long) {
         executorService.execute {
-            placeDao.updateOne(id, event_id)
+            placeDao.updatePlaceEvent(id, event_id)
         }
     }
 
+    override fun updatePlaceName(id: Int, name: String) {
+        executorService.execute {
+            placeDao.updatePlaceName(id, name)
+        }
+    }
 
     override fun getPlace(id: Int): LiveData<Place> {
         return placeDao.getOne(id) as LiveData<Place>

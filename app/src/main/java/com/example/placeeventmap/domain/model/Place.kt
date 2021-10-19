@@ -7,4 +7,5 @@ open class Place(
     open var name: String,
     open var description: String?,
     open var event_id: Long?,
+    open var address: String? = ""
 )

@@ -14,13 +14,15 @@ data class DBPlaceDTO(
     @ColumnInfo(name = "location_name") override var name: String,
     @ColumnInfo(name = "location_description") override var description: String? = null,
     @ColumnInfo(name = "real_event_id") var real_event_id: Long? = null,
+    @ColumnInfo(name = "address") override var address: String? = "",
 ) : Place (
     uid,
     latitude,
     longtitude,
     name,
     description,
-    real_event_id) {
+    real_event_id,
+    address) {
 
 
     constructor(place: Place) : this(
