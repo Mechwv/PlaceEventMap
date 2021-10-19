@@ -15,6 +15,7 @@ android {
     defaultConfig {
         compileSdk 31
         buildConfigField("String", "YANDEX_KEY", apikeyProperties['YANDEX_KEY'])
+        buildConfigField("String", "GEOCODER_KEY", apikeyProperties['GEOCODER_KEY'])
 
         applicationId "com.example.placeeventmap"
         minSdk 23
@@ -59,6 +60,11 @@ dependencies {
 
     //fragment
     implementation 'androidx.fragment:fragment-ktx:1.4.0-alpha10'
+
+    //retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
 
     // Облегчённая библиотека, содержит только карту, слой пробок,
     // LocationManager, UserLocationLayer и возможность скачивать оффлайн карты (только в платной версии).

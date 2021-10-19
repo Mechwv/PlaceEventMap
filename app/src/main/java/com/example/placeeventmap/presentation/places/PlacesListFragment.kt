@@ -54,8 +54,8 @@ class PlacesListFragment : Fragment(), PlacesListAdapter.onItemClickListener {
         binding.placesAddButton.setOnClickListener {
             viewModel.addPlace(Place(
                 0,
-                Random.nextDouble(360.0),
-                Random.nextDouble(360.0),
+                String.format("%.7f",Random.nextDouble(-90.0, 90.0)).toDouble(),
+                String.format("%.7f",Random.nextDouble(-180.0, 180.0)).toDouble(),
                 "CringePlace + ${Random.nextInt(1000)}",
                 "I have bouht + ${Random.nextInt(1000)} bottles of pepsi there",
             null))

@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
@@ -14,10 +15,8 @@ import com.example.placeeventmap.R
 import com.example.placeeventmap.databinding.FragmentPlacesInfoBinding
 import com.example.placeeventmap.presentation.room.dto.DBPlaceDTO
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
+import java.lang.Exception
 
 @AndroidEntryPoint
 class PlacesInfoFragment : Fragment() {
@@ -53,12 +52,25 @@ class PlacesInfoFragment : Fragment() {
         return binding.root
     }
 
+    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.getPlace(arguments?.get("place_id") as Int).observe(viewLifecycleOwner, { place ->
-            binding.placeName.setText(place.name)
-            binding.placeLat.setText(place.latitude.toString())
-            binding.placeLong.setText(place.longtitude.toString())
+        Toast.makeText(context, "${place.latitude},${place.longtitude}", Toast.LENGTH_SHORT).show()
+            GlobalScope.launch {
+                try {
+                    val place1 = viewModel.getPlaceName(place)
+                    MainScope().launch {
+                        binding.placeName.setText(place1)
+                        binding.placeLat.setText(place.latitude.toString())
+                        binding.placeLong.setText(place.longtitude.toString())
+                    }
+                } catch (e: Exception) {
+                    Log.e("RETROFIT_ERROR", "АЙ МЛЯТЬ ПЕРДАНУЛS")
+                }
+
+
+            }
         })
     }
 }
