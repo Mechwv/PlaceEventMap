@@ -1,10 +1,14 @@
 package com.example.placeeventmap.presentation.room
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.placeeventmap.presentation.room.dto.DBPlaceDTO
 import com.example.placeeventmap.presentation.room.dao.PlaceDao
 import com.example.placeeventmap.data.repository.PlaceRepository
 import com.example.placeeventmap.domain.model.Place
+import com.example.placeeventmap.presentation.retrofit.Common
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import java.lang.Exception
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -20,6 +24,16 @@ constructor(
         executorService.execute {
             placeDao.insert(DBPlaceDTO(place))
         }
+    }
+
+    @ExperimentalCoroutinesApi
+    override suspend fun getAddress(place: Place): String {
+        try {
+            return  Common.getPlaceName(place)
+        } catch (e: Exception) {
+            Log.e("123123", "Pepega")
+        }
+        return ""
     }
 
     override fun updatePlaceEvent(id: Int, event_id: Long) {

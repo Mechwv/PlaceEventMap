@@ -58,17 +58,4 @@ object Common {
         }
     }
 
-    @ExperimentalCoroutinesApi
-    suspend fun getPlaceNameWrap(place: Place): String {
-        var name = ""
-        try {
-            val job = GlobalScope.launch {
-              name = getPlaceName(place)
-            }
-            job.join()
-        } catch (e: Exception) {
-            Log.e("RETROFIT_ERROR_REPOS", e.toString())
-        }
-        return name
-    }
 }

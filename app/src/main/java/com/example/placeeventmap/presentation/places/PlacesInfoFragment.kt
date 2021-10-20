@@ -55,20 +55,12 @@ class PlacesInfoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.getPlace(arguments?.get("place_id") as Int).observe(viewLifecycleOwner, { place ->
         Toast.makeText(context, "${place.latitude},${place.longtitude}", Toast.LENGTH_SHORT).show()
-            GlobalScope.launch {
-                try {
-                    val place1 = Common.getPlaceNameWrap(place)
-                    MainScope().launch {
-                        binding.placeName.setText(place1)
-                        binding.placeLat.setText(place.latitude.toString())
-                        binding.placeLong.setText(place.longtitude.toString())
-                    }
-                } catch (e: Exception) {
-                    Log.e("RETROFIT_ERROR", "АЙ МЛЯТЬ ПЕРДАНУЛS")
-                }
+            viewModel.getAddress(place).observe(viewLifecycleOwner, {
+                binding.address.text = it
+            })
+            binding.placeLat.setText(place.latitude.toString())
+            binding.placeLong.setText(place.longtitude.toString())
 
-
-            }
         })
     }
 }
