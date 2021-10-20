@@ -47,6 +47,12 @@ class PlacesInfoFragment : Fragment() {
             binding.root.context.startActivity(shareIntent)
         }
 
+        binding.watchOnMap.setOnClickListener {
+            val uid = arguments?.get("place_id") as Int
+            val action = PlacesInfoFragmentDirections.actionPlacesInfoFragment2ToMapFragment(uid)
+            findNavController().navigate(action)
+        }
+
         return binding.root
     }
 
@@ -54,9 +60,13 @@ class PlacesInfoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.getPlace(arguments?.get("place_id") as Int).observe(viewLifecycleOwner, { place ->
-        Toast.makeText(context, "${place.latitude},${place.longtitude}", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(context, "${place.latitude},${place.longtitude}", Toast.LENGTH_SHORT).show()
             viewModel.getAddress(place).observe(viewLifecycleOwner, {
-                binding.address.text = it
+                if (it != "")
+                    binding.address.text = it
+                else {
+                    Toast.makeText(context, "Sorry, the place is unavailable", Toast.LENGTH_SHORT).show()
+                }
             })
             binding.placeLat.setText(place.latitude.toString())
             binding.placeLong.setText(place.longtitude.toString())

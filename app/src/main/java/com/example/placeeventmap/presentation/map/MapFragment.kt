@@ -19,8 +19,9 @@ import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.location.*
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.mapview.MapView
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MapFragment : Fragment() {
     private val viewModel: MapViewModel by viewModels()
     private lateinit var binding: MapFragmentBinding
@@ -35,6 +36,7 @@ class MapFragment : Fragment() {
     private val MINIMAL_DISTANCE = 50.0
     private val USE_IN_BACKGROUND = false
     val COMFORTABLE_ZOOM_LEVEL = 18
+    val OK_ZOOM_LEVEL = 10
 
     private var activityResultLauncher: ActivityResultLauncher<Array<String>> =
         registerForActivityResult(
@@ -65,14 +67,21 @@ class MapFragment : Fragment() {
         mapView = binding.mapview
         val layout = binding.mapFragment
 
-
-        locationManager = MapKitFactory.getInstance().createLocationManager()
-        mapView!!.map.move(
-            CameraPosition(Point(55.751574, 37.573856), 11.0f, 0.0f, 0.0f),
-            Animation(Animation.Type.SMOOTH, 0F),
-            null
-        )
-
+        val uid = arguments?.get("place_id") as Int
+        Log.e("uid","$uid")
+        if (uid != -1) {
+            viewModel.getPlace(uid).observe(viewLifecycleOwner, {
+                Log.e("COORDINATES","${it.latitude}, ${it.longtitude}")
+                moveCamera(Point(it.latitude, it.longtitude), OK_ZOOM_LEVEL.toFloat())
+            })
+        } else {
+            locationManager = MapKitFactory.getInstance().createLocationManager()
+            mapView!!.map.move(
+                CameraPosition(Point(55.751574, 37.573856), 11.0f, 0.0f, 0.0f),
+                Animation(Animation.Type.SMOOTH, 0F),
+                null
+            )
+        }
         myLocationListener = object : LocationListener {
             override fun onLocationUpdated(location: Location) {
                 if (myLocation == null) {

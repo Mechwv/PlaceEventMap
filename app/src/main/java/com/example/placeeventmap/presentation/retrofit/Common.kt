@@ -25,7 +25,8 @@ object Common {
         return suspendCancellableCoroutine { continuation ->
             val mService = retrofitService
             var name: String = ""
-            mService.getPlaceName(BuildConfig.GEOCODER_KEY, "${place.latitude},${place.longtitude}").enqueue(object : Callback<GeoResult> {
+//            Log.e("RETROFIT_REQUEST","${place.latitude},${place.longtitude}")
+            mService.getPlaceName(BuildConfig.GEOCODER_KEY, "${place.longtitude},${place.latitude}").enqueue(object : Callback<GeoResult> {
                 override fun onResponse(call: Call<GeoResult>, response: Response<GeoResult>) {
                     if (response.isSuccessful) {
                         val a = response.body()
