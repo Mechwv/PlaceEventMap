@@ -68,6 +68,7 @@ class PlacesInfoFragment : Fragment() {
                     Toast.makeText(context, "Sorry, the place is unavailable", Toast.LENGTH_SHORT).show()
                 }
             })
+            binding.placeName.setText(place.name)
             binding.placeLat.setText(place.latitude.toString())
             binding.placeLong.setText(place.longtitude.toString())
 
