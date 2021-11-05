@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/placesFragment"
-        android:name="com.example.placeeventmap.presentation.places.PlacesListFragment"
+        android:name="com.mechwv.placeeventmap.presentation.places.PlacesListFragment"
         android:label="PlacesFragment"
         tools:layout="@layout/places_list_fragment">
         <action
@@ -26,7 +26,7 @@
     </fragment>
     <fragment
         android:id="@+id/mapFragment"
-        android:name="com.example.placeeventmap.presentation.map.MapFragment"
+        android:name="com.mechwv.placeeventmap.presentation.map.MapFragment"
         android:label="MapFragment"
         tools:layout="@layout/map_fragment">
         <argument
@@ -36,7 +36,7 @@
     </fragment>
     <fragment
         android:id="@+id/eventAddFragment"
-        android:name="com.example.placeeventmap.presentation.events.EventAddFragment"
+        android:name="com.mechwv.placeeventmap.presentation.events.EventAddFragment"
         android:label="EventAddFragment"
         tools:layout="@layout/add_event_fragment">
         <argument
@@ -45,7 +45,7 @@
     </fragment>
     <fragment
         android:id="@+id/placesInfoFragment"
-        android:name="com.example.placeeventmap.presentation.places.PlacesInfoFragment"
+        android:name="com.mechwv.placeeventmap.presentation.places.PlacesInfoFragment"
         android:label="PlacesInfoFragment"
         tools:layout="@layout/fragment_places_info">
         <action
