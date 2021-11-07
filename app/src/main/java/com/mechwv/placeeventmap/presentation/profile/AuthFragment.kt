@@ -1,6 +1,7 @@
 package com.mechwv.placeeventmap.presentation.profile
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -22,14 +23,28 @@ class AuthFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = AuthFragmentBinding.inflate(layoutInflater, container, false)
-        viewModel.setAdmin()
-
+//        viewModel.setAdmin()
         viewModel.getProfile().observe(viewLifecycleOwner, { profile ->
             if (profile?.client_id != null) {
                 val action = AuthFragmentDirections.actionAuthFragmentToProfileFragment()
                 findNavController().navigate(action)
             }
         })
+        viewModel.getOauthUser().observe(viewLifecycleOwner, { user ->
+//            Log.e("USER TOKEN", user.oauthToken.toString())
+            if (user != null) {
+                viewModel.setCurrentUser(user)
+                if (user.oauthToken != null) {
+                    val token = user.oauthToken!!
+                    viewModel.getProfileByToken(token).observe(viewLifecycleOwner, { profile ->
+                        if (profile?.client_id != null) {
+                            viewModel.setProfile(profile)
+                        }
+                    })
+                }
+            }
+        })
+
 
         binding.register.setOnClickListener {
 

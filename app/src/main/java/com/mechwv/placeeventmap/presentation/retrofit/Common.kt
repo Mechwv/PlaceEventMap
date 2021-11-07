@@ -67,7 +67,7 @@ object Common {
         }
     }
 
-    suspend fun getProfile(access_code: String, activity: FragmentActivity): ProfileInfo {
+    suspend fun getProfile(access_code: String): ProfileInfo {
         return suspendCancellableCoroutine { continuation ->
             val mService = authService
             mService.getProfileInfo(auth= "OAuth $access_code").enqueue(object  : Callback<ProfileInfo> {

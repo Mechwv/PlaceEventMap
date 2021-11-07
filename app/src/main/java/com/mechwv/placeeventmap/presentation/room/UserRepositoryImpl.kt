@@ -20,17 +20,35 @@ constructor(
     val currentProfileInfo: LiveData<ProfileInfo?>
         get() = _currentProfileInfo
 
-    fun setProfile(profileInfo: ProfileInfo) {
+    private val _currentUserInfo = MutableLiveData<User?>()
+    val currentUserInfo: LiveData<User?>
+        get() = _currentUserInfo
+
+    fun setCurrentUser(user: User?) {
+        _currentUserInfo.value = user
+    }
+
+    fun setProfile(profileInfo: ProfileInfo?) {
         _currentProfileInfo.value = profileInfo
     }
 
-    override fun setUser(userDTO: DBUserDTO) {
+    override fun setOauthUser(userDTO: DBUserDTO) {
        executorService.execute {
-           userDao.insert(userDTO)
+           userDao.setOauthUser(userDTO)
        }
     }
 
     override fun getUser(email: String, password: String): LiveData<User> {
-        return userDao.get(email, password) as LiveData<User>
+        return userDao.getBaseUser(email, password) as LiveData<User>
+    }
+
+    override fun getOauthUser(): LiveData<User> {
+        return userDao.getOauthUser() as LiveData<User>
+    }
+
+    override fun deleteUser() {
+        executorService.execute {
+            userDao.deleteOauthUser()
+        }
     }
 }

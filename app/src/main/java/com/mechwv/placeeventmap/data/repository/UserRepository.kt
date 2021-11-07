@@ -5,6 +5,8 @@ import com.mechwv.placeeventmap.domain.model.User
 import com.mechwv.placeeventmap.presentation.room.dto.DBUserDTO
 
 interface UserRepository {
-    fun setUser(userDTO: DBUserDTO)
+    fun setOauthUser(userDTO: DBUserDTO)
     fun getUser(email: String, password: String): LiveData<User>
+    fun getOauthUser(): LiveData<User>
+    fun deleteUser()
 }

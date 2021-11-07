@@ -2,15 +2,21 @@ package com.mechwv.placeeventmap.presentation.room.dto
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.mechwv.placeeventmap.domain.model.Place
 import com.mechwv.placeeventmap.domain.model.Role
 import com.mechwv.placeeventmap.domain.model.User
 
-@Entity(tableName = "app_users")
+@Entity(tableName = "app_users", indices = [Index(
+        value = ["email", "oauth_token"],
+        unique = true
+    )]
+)
 data class DBUserDTO(
     @PrimaryKey(autoGenerate = true)
     val uid: Int,
+
     @ColumnInfo(name = "email") override var email: String,
     @ColumnInfo(name = "hashed_pass") override var hashed_pass: String,
     @ColumnInfo(name = "role") override var role: String,

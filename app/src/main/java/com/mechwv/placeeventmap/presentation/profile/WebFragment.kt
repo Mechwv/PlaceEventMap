@@ -40,7 +40,7 @@ class WebFragment : Fragment() {
         mBinding.Web.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
-                viewModel.getProfile(url, activity!!).observe(viewLifecycleOwner, { result ->
+                viewModel.getProfile(url).observe(viewLifecycleOwner, { result ->
                     if (result != null) {
                         val action = WebFragmentDirections.actionWebFragmentToProfileFragment()
                         findNavController().navigate(action)
