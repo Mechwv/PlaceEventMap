@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/my_nav"
-    app:startDestination="@id/placesFragment">
+    app:startDestination="@+id/authFragment">
 
     <fragment
         android:id="@+id/placesFragment"
@@ -23,6 +23,9 @@
                 android:name="place_id"
                 app:argType="integer"/>
         </action>
+        <action
+            android:id="@+id/action_placesFragment_to_profileFragment2"
+            app:destination="@+id/authFragment" />
     </fragment>
     <fragment
         android:id="@+id/mapFragment"
@@ -65,4 +68,31 @@
                 app:argType="integer"/>
         </action>
     </fragment>
+    <fragment
+        android:id="@+id/authFragment"
+        android:name="com.mechwv.placeeventmap.presentation.profile.AuthFragment"
+        android:label="auth_fragment"
+        tools:layout="@layout/auth_fragment">
+        <action
+            android:id="@+id/action_profileFragment2_to_webFragment"
+            app:destination="@id/webFragment" />
+        <deepLink app:uri="https://placeevent.map/profile" />
+        <deepLink app:uri="app://placeevent.map/profile" />
+        <action
+            android:id="@+id/action_authFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/webFragment"
+        android:name="com.mechwv.placeeventmap.presentation.profile.WebFragment"
+        android:label="WebFragment" >
+        <action
+            android:id="@+id/action_webFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.mechwv.placeeventmap.presentation.profile.ProfileFragment"
+        android:label="profile_fragment"
+        tools:layout="@layout/profile_fragment" />
 </navigation>

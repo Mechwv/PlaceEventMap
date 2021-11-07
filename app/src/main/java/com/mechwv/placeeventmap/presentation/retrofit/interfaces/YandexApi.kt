@@ -1,6 +1,6 @@
-package com.mechwv.placeeventmap.presentation.retrofit
+package com.mechwv.placeeventmap.presentation.retrofit.interfaces
 
-import com.mechwv.placeeventmap.presentation.retrofit.model.GeoResult
+import com.mechwv.placeeventmap.presentation.retrofit.model.geocodeApi.GeoResult
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Headers

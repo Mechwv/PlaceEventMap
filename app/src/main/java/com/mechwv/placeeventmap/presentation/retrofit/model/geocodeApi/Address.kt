@@ -1,4 +1,4 @@
-package com.mechwv.placeeventmap.presentation.retrofit.model
+package com.mechwv.placeeventmap.presentation.retrofit.model.geocodeApi
 
 data class Address(
     val Components: List<Component>,

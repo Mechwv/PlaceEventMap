@@ -16,8 +16,11 @@ android {
         compileSdk 31
         buildConfigField("String", "YANDEX_KEY", apikeyProperties['YANDEX_KEY'])
         buildConfigField("String", "GEOCODER_KEY", apikeyProperties['GEOCODER_KEY'])
+        buildConfigField("String", "OAUTH_ID", apikeyProperties['OAUTH_ID'])
+        buildConfigField("String", "OAUTH_PASS", apikeyProperties['OAUTH_PASS'])
+        buildConfigField("String", "REDIRECT_URI", apikeyProperties['REDIRECT_URI'])
 
-        applicationId "com.example.placeeventmap"
+        applicationId 'com.mechwv.placeeventmap'
         minSdk 23
         targetSdk 31
         versionCode 1
@@ -94,7 +97,6 @@ dependencies {
 
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
     kapt "androidx.hilt:hilt-compiler:1.0.0"
-
 
 
     testImplementation 'junit:junit:4.13.2'

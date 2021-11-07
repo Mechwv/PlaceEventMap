@@ -15,4 +15,9 @@
         android:enabled="true"
         android:icon="@drawable/ic_baseline_event_24"
         android:title="События"/>
+    <item
+        android:id="@+id/authFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_person_24"
+        android:title="Профиль"/>
 </menu>

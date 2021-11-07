@@ -4,6 +4,8 @@ import com.mechwv.placeeventmap.presentation.room.dao.EventDao
 import com.mechwv.placeeventmap.presentation.room.dao.PlaceDao
 import com.mechwv.placeeventmap.presentation.room.EventRepositoryImpl
 import com.mechwv.placeeventmap.presentation.room.PlaceRepositoryImpl
+import com.mechwv.placeeventmap.presentation.room.UserRepositoryImpl
+import com.mechwv.placeeventmap.presentation.room.dao.UserDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,5 +31,14 @@ object RepositoryModule {
     ): PlaceRepositoryImpl {
         return PlaceRepositoryImpl(placeDao)
     }
+
+    @Singleton
+    @Provides
+    fun provideUserRepository(
+        userDao: UserDao
+    ): UserRepositoryImpl {
+        return UserRepositoryImpl(userDao)
+    }
+
 
 }

@@ -2,9 +2,11 @@ package com.mechwv.placeeventmap.di
 
 import android.content.Context
 import androidx.room.Room
+import com.mechwv.placeeventmap.domain.model.User
 import com.mechwv.placeeventmap.presentation.room.AppDatabase
 import com.mechwv.placeeventmap.presentation.room.dao.EventDao
 import com.mechwv.placeeventmap.presentation.room.dao.PlaceDao
+import com.mechwv.placeeventmap.presentation.room.dao.UserDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,5 +42,11 @@ object RoomModule {
     @Provides
     fun provideEventDao(appDatabase: AppDatabase): EventDao {
         return appDatabase.eventDAO()
+    }
+
+    @Singleton
+    @Provides
+    fun provideUserDao(appDatabase: AppDatabase): UserDao {
+        return appDatabase.userDAO()
     }
 }

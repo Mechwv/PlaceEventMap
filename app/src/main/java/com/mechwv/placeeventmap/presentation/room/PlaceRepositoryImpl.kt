@@ -15,7 +15,8 @@ import java.util.concurrent.Executors
 class PlaceRepositoryImpl
 constructor(
     private val placeDao: PlaceDao
-) : PlaceRepository {
+) : PlaceRepository
+{
     private val executorService: ExecutorService = Executors.newFixedThreadPool(4)
     private var places: LiveData<List<DBPlaceDTO>> = placeDao.getAll()
 
