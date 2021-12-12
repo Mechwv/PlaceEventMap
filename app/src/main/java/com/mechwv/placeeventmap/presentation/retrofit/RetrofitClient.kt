@@ -2,6 +2,7 @@ package com.mechwv.placeeventmap.presentation.retrofit
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.jackson.JacksonConverterFactory
 
 object RetrofitClient {
     private var retrofit: Retrofit? = null
@@ -10,7 +11,7 @@ object RetrofitClient {
         if (retrofit == null) {
             retrofit = Retrofit.Builder()
                 .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(JacksonConverterFactory.create())
                 .build()
         }
         return retrofit!!

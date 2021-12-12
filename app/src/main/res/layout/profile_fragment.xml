@@ -72,13 +72,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Review Places"
-        app:layout_constraintBottom_toTopOf="@+id/addModerators"
+        app:layout_constraintBottom_toTopOf="@+id/change_moderators"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logout" />
 
     <Button
-        android:id="@+id/addModerators"
+        android:id="@+id/change_moderators"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add Moderators"

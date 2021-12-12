@@ -7,5 +7,5 @@ open class User(
     open var email: String,
     open var hashed_pass: String,
     open var role: String,
-    open var oauthToken: String? = null
+    open var jwtToken: String? = null
 )

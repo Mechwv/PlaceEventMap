@@ -1,7 +1,6 @@
 package com.mechwv.placeeventmap.presentation.profile
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -34,8 +33,8 @@ class AuthFragment : Fragment() {
 //            Log.e("USER TOKEN", user.oauthToken.toString())
             if (user != null) {
                 viewModel.setCurrentUser(user)
-                if (user.oauthToken != null) {
-                    val token = user.oauthToken!!
+                if (user.jwtToken != null) {
+                    val token = user.jwtToken!!
                     viewModel.getProfileByToken(token).observe(viewLifecycleOwner, { profile ->
                         if (profile?.client_id != null) {
                             viewModel.setProfile(profile)

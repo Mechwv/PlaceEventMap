@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/my_nav"
-    app:startDestination="@+id/authFragment">
+    app:startDestination="@id/placesFragment">
 
     <fragment
         android:id="@+id/placesFragment"
@@ -98,5 +98,21 @@
         <action
             android:id="@+id/action_profileFragment_to_authFragment"
             app:destination="@id/authFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_moderatorFragment2"
+            app:destination="@id/moderatorFragment2" >
+            <argument
+                android:name="jwtToken"
+                app:argType="string"/>
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/moderatorFragment2"
+        android:name="com.mechwv.placeeventmap.presentation.moderator.ModeratorFragment"
+        android:label="moderator_fragment"
+        tools:layout="@layout/moderator_fragment" >
+        <argument
+            android:name="jwtToken"
+            app:argType="string" />
     </fragment>
 </navigation>
