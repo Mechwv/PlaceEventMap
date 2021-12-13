@@ -1,6 +1,7 @@
 package com.mechwv.placeeventmap.presentation.profile
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,10 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.mechwv.placeeventmap.databinding.AuthFragmentBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AuthFragment : Fragment() {
@@ -24,13 +29,14 @@ class AuthFragment : Fragment() {
         binding = AuthFragmentBinding.inflate(layoutInflater, container, false)
 //        viewModel.setAdmin()
         viewModel.getProfile().observe(viewLifecycleOwner, { profile ->
+            Log.e("NAME", profile?.display_name.toString())
             if (profile?.client_id != null) {
                 val action = AuthFragmentDirections.actionAuthFragmentToProfileFragment()
                 findNavController().navigate(action)
             }
         })
         viewModel.getOauthUser().observe(viewLifecycleOwner, { user ->
-//            Log.e("USER TOKEN", user.oauthToken.toString())
+            Log.e("USER TOKEN", user.jwtToken.toString())
             if (user != null) {
                 viewModel.setCurrentUser(user)
                 if (user.jwtToken != null) {
@@ -40,6 +46,11 @@ class AuthFragment : Fragment() {
                             viewModel.setProfile(profile)
                         }
                     })
+                    GlobalScope.launch(Dispatchers.Main) {
+                        delay(2000L)
+                        if (viewModel.getProfile().value == null)
+                            Toast.makeText(context, "PLZ ENABLE INTERNET", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         })

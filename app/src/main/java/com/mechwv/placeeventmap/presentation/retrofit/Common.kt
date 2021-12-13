@@ -90,7 +90,8 @@ object Common {
                 }
                 override fun onFailure(call: Call<ProfileInfo>, t: Throwable) {
                     Log.e("TOKEN", t.message!!)
-                    continuation.resumeWithException(t)
+                    val exception = IllegalStateException("SERVER ERROR")
+                    continuation.resumeWithException(exception)
                 }
             })
         }
@@ -113,7 +114,6 @@ object Common {
                 }
                 override fun onFailure(call: Call<List<Place>>, t: Throwable) {
                     Log.e("PLACE", t.message!!)
-                    continuation.resumeWithException(t)
                 }
             })
         }

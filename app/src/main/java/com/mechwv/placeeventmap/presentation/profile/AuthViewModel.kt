@@ -12,6 +12,9 @@ import com.mechwv.placeeventmap.presentation.retrofit.Common
 import com.mechwv.placeeventmap.presentation.room.UserRepositoryImpl
 import com.mechwv.placeeventmap.presentation.room.dto.DBUserDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,14 +42,20 @@ class AuthViewModel @Inject constructor(
     }
 
     fun getProfileByToken(token: String): LiveData<ProfileInfo?> {
+        val handler = CoroutineExceptionHandler { _, exception ->
+            println("CoroutineExceptionHandler got $exception")
+        }
         try {
             return liveData {
-                emit(authService.getProfile(token))
+                val job = GlobalScope.launch(handler) {
+                    emit(authService.getProfile(token))
+                }
+                job.join()
             }
-        } catch (e: Exception) {
-            return liveData {
-                emit(null)
-            }
+        } catch (e: Exception){}
+
+        return liveData {
+            emit(repository.currentProfileInfo.value)
         }
     }
 
