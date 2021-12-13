@@ -36,7 +36,7 @@ class AuthFragment : Fragment() {
             }
         })
         viewModel.getOauthUser().observe(viewLifecycleOwner, { user ->
-            Log.e("USER TOKEN", user.jwtToken.toString())
+//            Log.e("USER TOKEN", user.jwtToken.toString())
             if (user != null) {
                 viewModel.setCurrentUser(user)
                 if (user.jwtToken != null) {
@@ -46,14 +46,14 @@ class AuthFragment : Fragment() {
                             viewModel.setProfile(profile)
                         }
                     })
-                    GlobalScope.launch(Dispatchers.Main) {
-                        delay(2000L)
-                        if (viewModel.getProfile().value == null)
-                            Toast.makeText(context, "PLZ ENABLE INTERNET", Toast.LENGTH_SHORT).show()
-                    }
                 }
             }
         })
+        GlobalScope.launch(Dispatchers.Main) {
+            delay(2000L)
+            if (viewModel.getProfile().value == null)
+                Toast.makeText(context, "PLZ ENABLE INTERNET", Toast.LENGTH_SHORT).show()
+        }
 
 
         binding.register.setOnClickListener {
