@@ -29,17 +29,24 @@ class AuthFragment : Fragment() {
         binding = AuthFragmentBinding.inflate(layoutInflater, container, false)
 //        viewModel.setAdmin()
         viewModel.getProfile().observe(viewLifecycleOwner, { profile ->
-            Log.e("NAME", profile?.display_name.toString())
             if (profile?.client_id != null) {
                 val action = AuthFragmentDirections.actionAuthFragmentToProfileFragment()
                 findNavController().navigate(action)
             }
         })
         viewModel.getOauthUser().observe(viewLifecycleOwner, { user ->
-//            Log.e("USER TOKEN", user.jwtToken.toString())
             if (user != null) {
+                Log.e("USER TOKEN", user.jwtToken.toString())
                 viewModel.setCurrentUser(user)
                 if (user.jwtToken != null) {
+
+                    GlobalScope.launch(Dispatchers.Main) {
+                        delay(2000L)
+                        if (viewModel.getProfile().value == null) {
+                            Toast.makeText(context, "PLZ ENABLE INTERNET", Toast.LENGTH_LONG).show()
+                        }
+                    }
+
                     val token = user.jwtToken!!
                     viewModel.getProfileByToken(token).observe(viewLifecycleOwner, { profile ->
                         if (profile?.client_id != null) {
@@ -49,11 +56,14 @@ class AuthFragment : Fragment() {
                 }
             }
         })
-        GlobalScope.launch(Dispatchers.Main) {
-            delay(2000L)
-            if (viewModel.getProfile().value == null)
-                Toast.makeText(context, "PLZ ENABLE INTERNET", Toast.LENGTH_SHORT).show()
-        }
+
+//        GlobalScope.launch(Dispatchers.Main) {
+//            delay(1000L)
+//            Log.e("HELP1", viewModel.getProfile().value.toString())
+//            if (viewModel.getProfile().value != null) {
+//                Toast.makeText(context, "PLZ ENABLE INTERNET", Toast.LENGTH_SHORT).show()
+//            }
+//        }
 
 
         binding.register.setOnClickListener {
