@@ -17,8 +17,10 @@ import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.location.*
 import com.yandex.mapkit.map.CameraPosition
+import com.yandex.mapkit.map.InputListener
 import com.yandex.mapkit.mapview.MapView
 import dagger.hilt.android.AndroidEntryPoint
+import com.yandex.mapkit.map.Map
 
 @AndroidEntryPoint
 class MapFragment : Fragment() {
@@ -69,10 +71,10 @@ class MapFragment : Fragment() {
         val uid = arguments?.get("place_id") as Int
         Log.e("uid","$uid")
         if (uid != -1) {
-            viewModel.getPlace(uid).observe(viewLifecycleOwner, {
-                Log.e("COORDINATES","${it.latitude}, ${it.longtitude}")
+            viewModel.getPlace(uid).observe(viewLifecycleOwner) {
+                Log.e("COORDINATES", "${it.latitude}, ${it.longtitude}")
                 moveCamera(Point(it.latitude, it.longtitude), OK_ZOOM_LEVEL.toFloat())
-            })
+            }
         } else {
             locationManager = MapKitFactory.getInstance().createLocationManager()
             mapView!!.map.move(
@@ -81,6 +83,10 @@ class MapFragment : Fragment() {
                 null
             )
         }
+
+        mapView?.map?.addInputListener(viewModel.listener)
+
+
         myLocationListener = object : LocationListener {
             override fun onLocationUpdated(location: Location) {
                 if (myLocation == null) {
@@ -103,6 +109,8 @@ class MapFragment : Fragment() {
                     ).show()
                 }
             }
+
+
         }
 
         return binding.root
@@ -115,6 +123,8 @@ class MapFragment : Fragment() {
             null
         )
     }
+
+
 
     override fun onStop() {
         super.onStop()
