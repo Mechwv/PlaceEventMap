@@ -72,8 +72,8 @@ dependencies {
 
     // Облегчённая библиотека, содержит только карту, слой пробок,
     // LocationManager, UserLocationLayer и возможность скачивать оффлайн карты (только в платной версии).
-    implementation 'com.yandex.android:maps.mobile:4.0.0-lite'
-
+//    implementation 'com.yandex.android:maps.mobile:4.0.0-lite'
+    implementation 'com.yandex.android:maps.mobile:4.0.0-full'
 
     // material design
     implementation 'com.google.android.material:material:1.4.0'

@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/mapFragment"
-    android:layout_height="match_parent"
-    tools:context=".presentation.map.MapFragment">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <com.yandex.mapkit.mapview.MapView
         android:id="@+id/mapview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-    </com.yandex.mapkit.mapview.MapView>
+        android:layout_height="match_parent" />
 
-</FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/search_edit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:maxLines="1"
+            android:text="cafe" />
+    </LinearLayout>
+</RelativeLayout>
