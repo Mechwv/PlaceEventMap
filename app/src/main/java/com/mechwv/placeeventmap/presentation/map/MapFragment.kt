@@ -2,11 +2,15 @@ package com.mechwv.placeeventmap.presentation.map
 
 import android.Manifest
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.ArrayAdapter
+import android.widget.ListView
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -17,8 +21,10 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.mechwv.placeeventmap.R
 import com.mechwv.placeeventmap.databinding.MapFragmentBinding
+import com.mechwv.placeeventmap.presentation.retrofit.model.geoApi.GeoPlace
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
+import com.yandex.mapkit.geometry.BoundingBox
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.location.*
 import com.yandex.mapkit.map.*
@@ -31,11 +37,13 @@ import com.yandex.runtime.image.ImageProvider
 import com.yandex.runtime.network.NetworkError
 import com.yandex.runtime.network.RemoteError
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class MapFragment : Session.SearchListener, Fragment() {
+class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Fragment() {
     private val viewModel: MapViewModel by viewModels()
     private lateinit var binding: MapFragmentBinding
     private var mapView: MapView? = null
@@ -46,6 +54,10 @@ class MapFragment : Session.SearchListener, Fragment() {
 
     private lateinit var searchManager: SearchManager
     private lateinit var searchSession: Session
+    private var suggestSession: SuggestSession? = null
+    private var suggestResultView: ListView? = null
+    private var resultAdapter: ArrayAdapter<*>? = null
+    private var suggestResult: MutableList<Any> = mutableListOf()
     private lateinit var layout: RelativeLayout
 
     //Constants
@@ -53,8 +65,22 @@ class MapFragment : Session.SearchListener, Fragment() {
     private val MINIMAL_TIME: Long = 0
     private val MINIMAL_DISTANCE = 50.0
     private val USE_IN_BACKGROUND = false
-    val COMFORTABLE_ZOOM_LEVEL = 5//15
+    val COMFORTABLE_ZOOM_LEVEL = 15//15
     val OK_ZOOM_LEVEL = 10//10
+
+    private val CENTER = Point(55.75, 37.62)
+    private val BOX_SIZE = 0.2
+    private val BOUNDING_BOX = BoundingBox(
+        Point(CENTER.latitude - BOX_SIZE, CENTER.longitude - BOX_SIZE),
+        Point(CENTER.latitude + BOX_SIZE, CENTER.longitude + BOX_SIZE)
+    )
+    private val SEARCH_OPTIONS = SuggestOptions().setSuggestTypes(
+        SuggestType.GEO.value or
+                SuggestType.BIZ.value or
+                SuggestType.TRANSIT.value
+    )
+
+    private val RESULT_NUMBER_LIMIT = 5
 
     private var activityResultLauncher: ActivityResultLauncher<Array<String>> =
         registerForActivityResult(
@@ -111,23 +137,80 @@ class MapFragment : Session.SearchListener, Fragment() {
     }
     private fun init() {
         MapKitFactory.initialize(context)
+        SearchFactory.initialize(context)
 
         val appPerms = arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION
         )
+
+        val searchEdit = binding.searchContainer
+        val searchText = binding.searchText
+
         activityResultLauncher.launch(appPerms)
         mapView = binding.mapview
         layout = binding.mapFragment
 
+
+        suggestResultView = binding.suggestResult
+        resultAdapter = ArrayAdapter(
+                context!!,
+                android.R.layout.simple_list_item_1,
+                android.R.id.text1,
+                suggestResult
+            )
+
+        suggestResultView?.adapter = resultAdapter
+        suggestResultView?.setOnItemClickListener { adapterView, view, pos, id ->
+            val element = adapterView?.getItemAtPosition(pos)
+            searchText.setText(element.toString())
+        }
+
         mapObjects = mapView?.map?.mapObjects
         searchManager = SearchFactory.getInstance().createSearchManager(SearchManagerType.COMBINED)
-        val searchEdit = binding.searchEdit
+        suggestSession = searchManager.createSuggestSession()
 
 
-        searchEdit.setOnEditorActionListener { textView, actionId, keyEvent ->
+        searchEdit.setEndIconOnClickListener {
+//            Toast.makeText(context, "Loopa click", Toast.LENGTH_SHORT).show()
+            viewModel.getAddressByString(searchEdit.editText?.text.toString())
+                .observe(viewLifecycleOwner) {
+                    if (it != GeoPlace()) {
+                        Toast.makeText(context, "${it.name} + ${it.lat} + ${it.long}", Toast.LENGTH_SHORT)
+                            .show()
+                        moveCamera(Point(it.lat, it.long), zoom = OK_ZOOM_LEVEL.toFloat())
+                        suggestResultView!!.visibility = View.INVISIBLE
+                    }
+                    else {
+                        Toast.makeText(context, "Sorry, the place is unavailable", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+        }
+
+        searchText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(editable: Editable?) {
+                requestSuggest(editable.toString())
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+
+        searchText.setOnEditorActionListener { textView, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                submitQuery(searchEdit.text.toString())
+                viewModel.getAddressByString(searchEdit.editText.toString())
+                    .observe(viewLifecycleOwner) {
+                        if (it != GeoPlace()) {
+                            Toast.makeText(context, "${it.name} + ${it.lat} + ${it.long}", Toast.LENGTH_SHORT)
+                                .show()
+                            moveCamera(Point(it.lat, it.long), zoom = OK_ZOOM_LEVEL.toFloat())
+                            suggestResultView!!.visibility = View.INVISIBLE
+                        }
+                        else {
+                            Toast.makeText(context, "Sorry, the place is unavailable", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    }
             }
             false
         }
@@ -173,8 +256,6 @@ class MapFragment : Session.SearchListener, Fragment() {
         return
     }
 
-
-
     override fun onStop() {
         super.onStop()
         mapView?.onStop()
@@ -203,6 +284,7 @@ class MapFragment : Session.SearchListener, Fragment() {
         }
     }
 
+    // Блок с поиском таких мест, как кафе, заправки и т п
     private fun submitQuery(query: String) {
         searchSession = searchManager.submit(
             query,
@@ -237,6 +319,30 @@ class MapFragment : Session.SearchListener, Fragment() {
         }
 
         Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onResponse(suggest: List<SuggestItem>) {
+        suggestResult.clear()
+        for (i in 0 until Math.min(RESULT_NUMBER_LIMIT, suggest.size)) {
+            suggest[i].displayText?.let { suggestResult.add(it) }
+        }
+        resultAdapter!!.notifyDataSetChanged()
+        suggestResultView!!.visibility = View.VISIBLE
+    }
+
+    override fun onError(error: Error) {
+        var errorMessage = getString(R.string.unknown_error_message)
+        if (error is RemoteError) {
+            errorMessage = getString(R.string.remote_error_message)
+        } else if (error is NetworkError) {
+            errorMessage = getString(R.string.network_error_message)
+        }
+        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun requestSuggest(query: String) {
+        suggestResultView!!.visibility = View.INVISIBLE
+        suggestSession!!.suggest(query, BOUNDING_BOX, SEARCH_OPTIONS, this)
     }
 
 

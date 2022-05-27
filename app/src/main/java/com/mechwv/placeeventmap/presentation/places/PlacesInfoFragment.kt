@@ -56,19 +56,20 @@ class PlacesInfoFragment : Fragment() {
     @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getPlace(arguments?.get("place_id") as Int).observe(viewLifecycleOwner, { place ->
+        viewModel.getPlace(arguments?.get("place_id") as Int).observe(viewLifecycleOwner) { place ->
 //        Toast.makeText(context, "${place.latitude},${place.longtitude}", Toast.LENGTH_SHORT).show()
-            viewModel.getAddress(place).observe(viewLifecycleOwner, {
+            viewModel.getAddress(place).observe(viewLifecycleOwner) {
                 if (it != "")
                     binding.address.text = it
                 else {
-                    Toast.makeText(context, "Sorry, the place is unavailable", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Sorry, the place is unavailable", Toast.LENGTH_SHORT)
+                        .show()
                 }
-            })
+            }
             binding.placeName.setText(place.name)
             binding.placeLat.setText(place.latitude.toString())
             binding.placeLong.setText(place.longtitude.toString())
 
-        })
+        }
     }
 }

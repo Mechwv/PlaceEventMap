@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:minHeight="?attr/minTouchTargetSize">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/normalMargin"
+        android:layout_marginLeft="@dimen/normalMargin"
+        android:layout_marginTop="@dimen/normalMargin"
+        android:layout_marginBottom="@dimen/normalMargin"
+        android:text="@string/longString"
+        android:textSize="20sp" />
+
+</LinearLayout>

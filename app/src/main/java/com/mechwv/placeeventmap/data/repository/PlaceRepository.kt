@@ -2,6 +2,9 @@ package com.mechwv.placeeventmap.data.repository
 
 import androidx.lifecycle.LiveData
 import com.mechwv.placeeventmap.domain.model.Place
+import com.mechwv.placeeventmap.presentation.retrofit.model.geoApi.GeoPlace
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import okhttp3.Address
 
 interface PlaceRepository {
     fun addPlace(place: Place)
@@ -13,4 +16,6 @@ interface PlaceRepository {
     fun addPlaces(place: List<Place>)
     fun deletePlace(place: Place)
     fun deletePlaces(place: List<Place>)
+    @ExperimentalCoroutinesApi
+    suspend fun getAddressByString(address: String): GeoPlace
 }

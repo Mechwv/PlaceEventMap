@@ -21,6 +21,7 @@
         android:name="com.mechwv.placeeventmap.MainActivity"
         android:screenOrientation="fullSensor"
         tools:ignore="LockedOrientationActivity"
+        android:windowSoftInputMode="stateHidden|adjustPan"
         android:exported="true"
         android:launchMode="standard">
 

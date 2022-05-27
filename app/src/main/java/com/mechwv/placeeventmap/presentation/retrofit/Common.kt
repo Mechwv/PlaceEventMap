@@ -1,13 +1,16 @@
 package com.mechwv.placeeventmap.presentation.retrofit
 
+import com.mechwv.placeeventmap.presentation.retrofit.model.geoApi.GeocodeResult
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.mechwv.placeeventmap.BuildConfig
 import com.mechwv.placeeventmap.domain.model.Place
 import com.mechwv.placeeventmap.presentation.retrofit.interfaces.YandexApi
 import com.mechwv.placeeventmap.presentation.retrofit.interfaces.YandexOauthApi
-import com.mechwv.placeeventmap.presentation.retrofit.model.geocodeApi.GeoResult
 import com.mechwv.placeeventmap.domain.model.ProfileInfo
 import com.mechwv.placeeventmap.presentation.retrofit.interfaces.ServerApi
+import com.mechwv.placeeventmap.presentation.retrofit.model.geoApi.GeoPlace
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import retrofit2.Call
@@ -32,42 +35,57 @@ object Common {
 
 
     @ExperimentalCoroutinesApi
-    suspend fun getPlaceName(place: Place): String {
+    suspend fun getPlaceName(place: Place? = null, address: String? = null): GeoPlace {
         return suspendCancellableCoroutine { continuation ->
             val mService = retrofitService
-            var name: String = ""
+            var geoPlace = GeoPlace()
+            var name = ""
 //            Log.e("RETROFIT_REQUEST","${place.latitude},${place.longtitude}")
-            mService.getPlaceName(BuildConfig.GEOCODER_KEY, "${place.longtitude},${place.latitude}").enqueue(object : Callback<GeoResult> {
-                override fun onResponse(call: Call<GeoResult>, response: Response<GeoResult>) {
-                    if (response.isSuccessful) {
-                        val searchResponse = (response.body() as GeoResult)
-                            .response
-                            .GeoObjectCollection
-                            .featureMember
-                        if (searchResponse.isNotEmpty()) {
-                            name =
-                                searchResponse[0].GeoObject.metaDataProperty.GeocoderMetaData.text
-                            continuation.resume(name)
-                            Log.e("RETROFIT_SUCCESS", name)
-                            return
+            if (place != null || address != null) {
+
+                val searchString: String = address ?: "${place?.longtitude},${place?.latitude}"
+
+                mService.getPlaceName(
+                    BuildConfig.GEOCODER_KEY,
+                    searchString
+                ).enqueue(object : Callback<GeocodeResult> {
+                    @RequiresApi(Build.VERSION_CODES.N)
+                    override fun onResponse(call: Call<GeocodeResult>, response: Response<GeocodeResult>) {
+                        if (response.isSuccessful) {
+                            Log.d("SEARCH", response.body().toString())
+                            val searchResponse = (response.body() as GeocodeResult)
+                                .response
+                                .geoObjectCollection
+                                .featureMember
+                            if (searchResponse.isNotEmpty()) {
+                                geoPlace.name =
+                                    searchResponse[0].geoObject.metaDataProperty.geocoderMetaData.text
+                                val pos = searchResponse[0].geoObject.point?.pos?.split(" ")
+                                geoPlace.lat = pos?.get(1)!!.toDouble()
+                                geoPlace.long = pos?.get(0)!!.toDouble()
+                                    searchResponse[0].geoObject.metaDataProperty.geocoderMetaData.text
+                                continuation.resume(geoPlace)
+                                Log.e("RETROFIT_SUCCESS", name)
+                                return
+                            }
+                        }
+                        if (continuation.isActive) {
+                            val exception = IllegalStateException(response.errorBody()?.string())
+                            Log.e("RETROFIT_ERROR", "Retrofit failure!")
+                            continuation.resumeWithException(exception)
                         }
                     }
-                    if (continuation.isActive) {
-                        val exception = IllegalStateException(response.errorBody()?.string())
-                        Log.e("RETROFIT_ERROR", "Retrofit failure!")
-                        continuation.resumeWithException(exception)
-                    }
-                }
 
-                override fun onFailure(call: Call<GeoResult>, t: Throwable) {
-                    if (call.isCanceled) {
-                        continuation.cancel()
-                        return
+                    override fun onFailure(call: Call<GeocodeResult>, t: Throwable) {
+                        if (call.isCanceled) {
+                            continuation.cancel()
+                            return
+                        }
+                        Log.e("RETROFIT_ERROR", "Retrofit failure!", t)
+                        continuation.resumeWithException(t)
                     }
-                    Log.e("RETROFIT_ERROR", "Retrofit failure!", t)
-                    continuation.resumeWithException(t)
-                }
-            })
+                })
+            }
         }
     }
 
@@ -130,7 +148,7 @@ object Common {
 //        return suspendCancellableCoroutine { continuation ->
 //            val mService = authService
 //            mService.getProfileInfo(auth= "OAuth $access_code").enqueue(object  : Callback<ProfileInfo> {
-//                override fun onResponse(call: Call<ProfileInfo>, response: Response<ProfileInfo>) {
+//                override fun onResponse(call: Call<ProfileInfo>, response: com.mechwv.placeeventmap.presentation.retrofit.model.geoApi.Response<ProfileInfo>) {
 //                    if (response.isSuccessful) {
 //                        val authResponse = (response.body() as ProfileInfo)
 //                        continuation.resume(authResponse)

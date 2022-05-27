@@ -7,7 +7,9 @@ import com.mechwv.placeeventmap.presentation.room.dao.PlaceDao
 import com.mechwv.placeeventmap.data.repository.PlaceRepository
 import com.mechwv.placeeventmap.domain.model.Place
 import com.mechwv.placeeventmap.presentation.retrofit.Common
+import com.mechwv.placeeventmap.presentation.retrofit.model.geoApi.GeoPlace
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import okhttp3.Address
 import java.lang.Exception
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -30,11 +32,21 @@ constructor(
     @ExperimentalCoroutinesApi
     override suspend fun getAddress(place: Place): String {
         try {
-            return  Common.getPlaceName(place)
+            return  Common.getPlaceName(place = place).name
         } catch (e: Exception) {
             Log.e("123123", "Pepega")
         }
         return ""
+    }
+
+    @ExperimentalCoroutinesApi
+    override suspend fun getAddressByString(address: String): GeoPlace {
+        try {
+            return  Common.getPlaceName(address = address)
+        } catch (e: Exception) {
+            Log.e("123123", "Pepega")
+        }
+        return GeoPlace()
     }
 
     override fun updatePlaceEvent(id: Int, event_id: Long) {

@@ -1,6 +1,6 @@
 package com.mechwv.placeeventmap.presentation.retrofit.interfaces
 
-import com.mechwv.placeeventmap.presentation.retrofit.model.geocodeApi.GeoResult
+import com.mechwv.placeeventmap.presentation.retrofit.model.geoApi.GeocodeResult
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -14,6 +14,6 @@ interface YandexApi {
         @Query("geocode") geocode: String,
         @Query("format") format: String = "json",
         @Query("results") results: String = "1"
-    ): Call<GeoResult>
+    ): Call<GeocodeResult>
 
 }
