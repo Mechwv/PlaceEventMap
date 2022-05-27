@@ -250,7 +250,7 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
         lifecycleScope.launch{
             val imageProvider = AnimatedImageProvider.fromAsset(context, "sf1.png")
             val animatedPlacemark =
-                mapObjects!!.addPlacemark(geoPoint, imageProvider, IconStyle())
+                mapObjects!!.addPlacemark(geoPoint, imageProvider, IconStyle().setScale(0.7f))
             animatedPlacemark.useAnimation().play()
         }
         return
