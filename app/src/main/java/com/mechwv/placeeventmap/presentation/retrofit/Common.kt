@@ -28,7 +28,8 @@ object Common {
     private val authService: YandexOauthApi
         get() = RetrofitClient.getClient(ID_BASE_URL).create(YandexOauthApi::class.java)
 
-    private const val SERVER_BASE_URL = "http://136.243.64.85:9000/"
+    private const val SERVER_BASE_URL = "https://placeeventmap-server.herokuapp.com/"
+//    private const val SERVER_BASE_URL = "http://136.243.64.85:9000/"
 //    private const val SERVER_BASE_URL = "http://10.0.2.2:8080/"
     private val serverService: ServerApi
         get() = RetrofitClient.getClient(SERVER_BASE_URL).create(ServerApi::class.java)

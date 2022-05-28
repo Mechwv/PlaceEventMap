@@ -172,20 +172,29 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
 
 
         searchEdit.setEndIconOnClickListener {
-//            Toast.makeText(context, "Loopa click", Toast.LENGTH_SHORT).show()
-            viewModel.getAddressByString(searchEdit.editText?.text.toString())
-                .observe(viewLifecycleOwner) {
-                    if (it != GeoPlace()) {
-                        Toast.makeText(context, "${it.name} + ${it.lat} + ${it.long}", Toast.LENGTH_SHORT)
-                            .show()
-                        moveCamera(Point(it.lat, it.long), zoom = OK_ZOOM_LEVEL.toFloat())
-                        suggestResultView!!.visibility = View.INVISIBLE
+//            Toast.makeText(context, searchEdit.editText.text.toString(), Toast.LENGTH_SHORT).show()
+            if (searchEdit.editText?.text.toString() != "") {
+                viewModel.getAddressByString(searchEdit.editText?.text.toString())
+                    .observe(viewLifecycleOwner) {
+                        if (it != GeoPlace()) {
+                            Toast.makeText(
+                                context,
+                                "${it.name} + ${it.lat} + ${it.long}",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                            moveCamera(Point(it.lat, it.long), zoom = OK_ZOOM_LEVEL.toFloat())
+                            suggestResultView!!.visibility = View.INVISIBLE
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "Sorry, the place is unavailable",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        }
                     }
-                    else {
-                        Toast.makeText(context, "Sorry, the place is unavailable", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                }
+            }
         }
 
         searchText.addTextChangedListener(object : TextWatcher {
@@ -198,19 +207,28 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
 
         searchText.setOnEditorActionListener { textView, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                viewModel.getAddressByString(searchEdit.editText.toString())
-                    .observe(viewLifecycleOwner) {
-                        if (it != GeoPlace()) {
-                            Toast.makeText(context, "${it.name} + ${it.lat} + ${it.long}", Toast.LENGTH_SHORT)
-                                .show()
-                            moveCamera(Point(it.lat, it.long), zoom = OK_ZOOM_LEVEL.toFloat())
-                            suggestResultView!!.visibility = View.INVISIBLE
+                if (searchEdit.editText?.text.toString() != "") {
+                    viewModel.getAddressByString(searchEdit.editText.toString())
+                        .observe(viewLifecycleOwner) {
+                            if (it != GeoPlace()) {
+                                Toast.makeText(
+                                    context,
+                                    "${it.name} + ${it.lat} + ${it.long}",
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                                moveCamera(Point(it.lat, it.long), zoom = OK_ZOOM_LEVEL.toFloat())
+                                suggestResultView!!.visibility = View.INVISIBLE
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "Sorry, the place is unavailable",
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                            }
                         }
-                        else {
-                            Toast.makeText(context, "Sorry, the place is unavailable", Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                    }
+                }
             }
             false
         }
