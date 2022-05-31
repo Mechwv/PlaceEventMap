@@ -65,7 +65,7 @@
                 android:layout_height="wrap_content"
 
                 android:layout_marginVertical="@dimen/normalMargin"
-                android:hint="longtitude"
+                android:hint="longitude"
 
                 android:textSize="20sp"
                 android:autofillHints="@string/enter_party_name"

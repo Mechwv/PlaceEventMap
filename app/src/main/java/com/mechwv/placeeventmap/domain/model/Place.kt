@@ -7,8 +7,8 @@ open class Place(
     open var id: Int = 0,
     @JsonProperty("latitude")
     open var latitude: Double,
-    @JsonProperty("longtitude")
-    open var longtitude: Double,
+    @JsonProperty("longitude")
+    open var longitude: Double,
     @JsonProperty("name")
     open var name: String,
     @JsonProperty("description")

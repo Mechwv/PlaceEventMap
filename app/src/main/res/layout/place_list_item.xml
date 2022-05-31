@@ -40,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="@{`Координаты: ` + Double.toString(place.latitude) + ' ' + Double.toString(place.longtitude)}"
+            android:text="@{`Координаты: ` + Double.toString(place.latitude) + ' ' + Double.toString(place.longitude)}"
             android:textAppearance="?attr/textAppearanceBodyMedium"
             android:textColor="?android:attr/textColorSecondary"
             />
@@ -77,7 +77,7 @@
 <!--            android:layout_marginStart="8dp"-->
 <!--            android:layout_marginTop="15dp"-->
 <!--            android:layout_marginBottom="18dp"-->
-<!--            android:text="@{Double.toString(place.latitude) + ' ' + Double.toString(place.longtitude)}"-->
+<!--            android:text="@{Double.toString(place.latitude) + ' ' + Double.toString(place.longitude)}"-->
 <!--            app:layout_constraintBottom_toTopOf="@+id/description"-->
 <!--            app:layout_constraintStart_toStartOf="parent"-->
 <!--            app:layout_constraintTop_toBottomOf="@+id/title"-->

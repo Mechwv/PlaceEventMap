@@ -15,9 +15,10 @@ import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
@@ -104,7 +105,7 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
         override fun onMapTap(map: Map, point: Point) {
             Log.d("Map touch","You have touched $point")
             createPlacemark(point, "", "")
-            showDialog()
+            showDialog(point)
         }
     }
 
@@ -244,8 +245,9 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
         mapView?.map?.addInputListener(listener)
     }
 
-    fun showDialog() {
+    fun showDialog(point: Point) {
         val dialog = FullScreenDialog()
+        dialog.arguments = bundleOf("longitude" to point.longitude, "latitude" to point.latitude)
         dialog.show(childFragmentManager, "tag")
     }
 
@@ -254,8 +256,8 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
         Log.e("uid","$uid")
         if (uid != -1) {
             viewModel.getPlace(uid).observe(viewLifecycleOwner) {
-                Log.e("COORDINATES", "${it.latitude}, ${it.longtitude}")
-                moveCamera(Point(it.latitude, it.longtitude), OK_ZOOM_LEVEL.toFloat())
+                Log.e("COORDINATES", "${it.latitude}, ${it.longitude}")
+                moveCamera(Point(it.latitude, it.longitude), OK_ZOOM_LEVEL.toFloat())
             }
         } else {
             locationManager = MapKitFactory.getInstance().createLocationManager()

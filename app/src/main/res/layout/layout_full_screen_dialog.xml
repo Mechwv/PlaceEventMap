@@ -52,7 +52,7 @@
                 android:layout_width="match_parent" />
 
             <TextView
-                android:id="@+id/longtitude"
+                android:id="@+id/longitude"
                 android:layout_height="48dp"
                 android:text="Долгота"
                 android:layout_marginEnd="@dimen/normalMargin"
@@ -87,7 +87,7 @@
                 android:padding="8dp" />
 
             <EditText
-                android:id="@+id/longtitude_text"
+                android:id="@+id/longitude_text"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:ems="20"

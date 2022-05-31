@@ -10,7 +10,7 @@ data class DBPlaceDTO(
     @PrimaryKey(autoGenerate = true)
     val uid: Int,
     @ColumnInfo(name = "location_latitude") override var latitude: Double,
-    @ColumnInfo(name = "location_longtitude") override var longtitude: Double,
+    @ColumnInfo(name = "location_longitude") override var longitude: Double,
     @ColumnInfo(name = "location_name") override var name: String,
     @ColumnInfo(name = "location_description") override var description: String? = null,
     @ColumnInfo(name = "real_event_id") var real_event_id: Long? = null,
@@ -18,7 +18,7 @@ data class DBPlaceDTO(
 ) : Place (
     uid,
     latitude,
-    longtitude,
+    longitude,
     name,
     description,
     real_event_id,
@@ -28,7 +28,7 @@ data class DBPlaceDTO(
     constructor(place: Place) : this(
         place.id,
         place.latitude,
-        place.longtitude,
+        place.longitude,
         place.name,
         place.description
     )

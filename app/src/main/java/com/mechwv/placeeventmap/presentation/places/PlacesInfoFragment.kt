@@ -57,7 +57,7 @@ class PlacesInfoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.getPlace(arguments?.get("place_id") as Int).observe(viewLifecycleOwner) { place ->
-//        Toast.makeText(context, "${place.latitude},${place.longtitude}", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(context, "${place.latitude},${place.longitude}", Toast.LENGTH_SHORT).show()
             viewModel.getAddress(place).observe(viewLifecycleOwner) {
                 if (it != "")
                     binding.address.text = it
@@ -68,7 +68,7 @@ class PlacesInfoFragment : Fragment() {
             }
             binding.placeName.setText(place.name)
             binding.placeLat.setText(place.latitude.toString())
-            binding.placeLong.setText(place.longtitude.toString())
+            binding.placeLong.setText(place.longitude.toString())
 
         }
     }

@@ -41,10 +41,10 @@ object Common {
             val mService = retrofitService
             var geoPlace = GeoPlace()
             var name = ""
-//            Log.e("RETROFIT_REQUEST","${place.latitude},${place.longtitude}")
+//            Log.e("RETROFIT_REQUEST","${place.latitude},${place.longitude}")
             if (place != null || address != null) {
 
-                val searchString: String = address ?: "${place?.longtitude},${place?.latitude}"
+                val searchString: String = address ?: "${place?.longitude},${place?.latitude}"
 
                 mService.getPlaceName(
                     BuildConfig.GEOCODER_KEY,
