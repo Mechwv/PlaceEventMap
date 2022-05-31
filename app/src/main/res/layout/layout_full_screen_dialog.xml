@@ -62,17 +62,6 @@
                 android:textStyle="bold"
                 android:layout_width="match_parent" />
 
-            <TextView
-                android:id="@+id/desc"
-                android:layout_height="96dp"
-                android:text="Описание"
-                android:gravity="center"
-                android:layout_marginEnd="@dimen/normalMargin"
-                android:padding="10dp"
-                android:textSize="18sp"
-                android:fontFamily="sans-serif-condensed"
-                android:textStyle="bold"
-                android:layout_width="match_parent" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
@@ -94,7 +83,7 @@
                 android:layout_height="48dp"
                 android:ems="20"
                 android:hint="Type here"
-                android:inputType="numberSigned"
+                android:inputType="numberDecimal"
                 android:padding="8dp" />
 
             <EditText
@@ -103,18 +92,36 @@
                 android:layout_height="48dp"
                 android:ems="20"
                 android:hint="Type here"
-                android:inputType="numberSigned"
-                android:padding="8dp" />
-
-            <EditText
-                android:id="@+id/desc_text"
-                android:layout_width="match_parent"
-                android:layout_height="96dp"
-                android:ems="20"
-                android:hint="Type here"
-                android:inputType="numberSigned"
+                android:inputType="numberDecimal"
                 android:padding="8dp" />
         </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/desc"
+            android:layout_height="96dp"
+            android:text="Описание"
+            android:gravity="center"
+            android:layout_marginEnd="@dimen/normalMargin"
+            android:padding="10dp"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif-condensed"
+            android:textStyle="bold"
+            android:layout_width="wrap_content" />
+
+        <EditText
+            android:id="@+id/desc_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="20"
+            android:gravity="top|start"
+            android:hint="Type here"
+            android:inputType="textMultiLine"
+            android:minLines="1"
+            android:maxLines="2" />
     </LinearLayout>
 
     <Button

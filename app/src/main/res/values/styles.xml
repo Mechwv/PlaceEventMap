@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.App.Dialog.FullScreen"
+        parent="Theme.PlaceEventMap">
+        <!-- (1)-->
+        <item name="android:windowIsFloating">false</item>
+        <!-- (2) -->
+    </style>
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">
+            @anim/enter_slide_up
+        </item>
+        <item name="android:windowExitAnimation">
+            @anim/exit_slide_down
+        </item>
+    </style>
+</resources>

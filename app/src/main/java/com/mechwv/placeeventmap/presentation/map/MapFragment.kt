@@ -16,9 +16,12 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
+import com.mechwv.placeeventmap.FullScreenDialog
 import com.mechwv.placeeventmap.R
 import com.mechwv.placeeventmap.databinding.MapFragmentBinding
 import com.mechwv.placeeventmap.presentation.retrofit.model.geoApi.GeoPlace
@@ -59,6 +62,7 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
     private var resultAdapter: ArrayAdapter<*>? = null
     private var suggestResult: MutableList<Any> = mutableListOf()
     private lateinit var layout: RelativeLayout
+    private lateinit var supportFragmentManager: FragmentManager
 
     //Constants
     private val DESIRED_ACCURACY = 0.0
@@ -100,6 +104,7 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
         override fun onMapTap(map: Map, point: Point) {
             Log.d("Map touch","You have touched $point")
             createPlacemark(point, "", "")
+            showDialog()
         }
     }
 
@@ -132,6 +137,7 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
         savedInstanceState: Bundle?
     ): View {
         binding = MapFragmentBinding.inflate(layoutInflater, container, false)
+        supportFragmentManager = childFragmentManager
         init()
         return binding.root
     }
@@ -236,6 +242,11 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
         moveCameraToPlace()
 
         mapView?.map?.addInputListener(listener)
+    }
+
+    fun showDialog() {
+        val dialog = FullScreenDialog()
+        dialog.show(childFragmentManager, "tag")
     }
 
     private fun moveCameraToPlace() {
