@@ -12,9 +12,9 @@ open class Place(
     @JsonProperty("name")
     open var name: String,
     @JsonProperty("description")
-    open var description: String?,
+    open var description: String = "",
     @JsonProperty("event_id")
-    open var event_id: Long?,
+    open var event_id: Long? = null,
     @JsonProperty("address")
     open var address: String? = ""
 )

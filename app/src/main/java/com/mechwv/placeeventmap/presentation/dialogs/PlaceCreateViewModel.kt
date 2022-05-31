@@ -1,4 +1,4 @@
-package com.mechwv.placeeventmap.presentation.map
+package com.mechwv.placeeventmap.presentation.dialogs
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -13,23 +13,20 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
 @HiltViewModel
-class MapViewModel @Inject constructor(
+class PlaceCreateViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val repository: PlaceRepositoryImpl
 ): ViewModel() {
 
-    val DBPlaces: LiveData<List<Place>> = repository.getPlaces()
-
-//    private val markerDataList = mutableListOf<MarkerData>
-//    private val markerDataList = MapObjectCollectionBinding
+    fun addPlace(place: Place) {
+        repository.addPlace(place)
+    }
 
     fun getPlace(id: Int): LiveData<Place> {
         val place = repository.getPlace(id)
         Log.e("Place : ", place.value.toString())
         return place
     }
-
-
 
     @ExperimentalCoroutinesApi
     fun getAddressByString(address: String): LiveData<GeoPlace> {

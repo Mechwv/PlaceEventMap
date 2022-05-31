@@ -1,21 +1,21 @@
-package com.mechwv.placeeventmap
+package com.mechwv.placeeventmap.presentation.dialogs
 
-import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
-import android.widget.Toast
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.setFragmentResultListener
-import com.mechwv.placeeventmap.databinding.LayoutFullScreenDialogBinding
-import com.mechwv.placeeventmap.databinding.MapFragmentBinding
+import androidx.fragment.app.viewModels
+import com.mechwv.placeeventmap.R
+import com.mechwv.placeeventmap.databinding.PlaceCreateDialogBinding
+import com.mechwv.placeeventmap.domain.model.Place
+import dagger.hilt.android.AndroidEntryPoint
 
-class FullScreenDialog : DialogFragment() {
-    private lateinit var binding: LayoutFullScreenDialogBinding
+@AndroidEntryPoint
+class PlaceCreateDialog : DialogFragment() {
+    private lateinit var binding: PlaceCreateDialogBinding
+    private val viewModel: PlaceCreateViewModel by viewModels()
     var longitude: Double = 1.1
     var latitude: Double = 2.2
 
@@ -37,7 +37,18 @@ class FullScreenDialog : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = LayoutFullScreenDialogBinding.inflate(layoutInflater, container, false)
+        binding = PlaceCreateDialogBinding.inflate(layoutInflater, container, false)
+        //TODO databinding
+        binding.button.setOnClickListener {
+            val place = Place(
+                latitude = binding.latitudeText.text.toString().toDouble(),
+                longitude = binding.longitudeText.text.toString().toDouble(),
+                name = binding.placeText.text.toString(),
+                description = binding.descText.text.toString()
+            )
+            viewModel.addPlace(place)
+            dismiss()
+        }
         // Inflate the layout to use as dialog or embedded fragment
         return binding.root
     }
