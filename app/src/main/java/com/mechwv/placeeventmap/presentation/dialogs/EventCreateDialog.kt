@@ -1,4 +1,4 @@
-package com.mechwv.placeeventmap.presentation.events
+package com.mechwv.placeeventmap.presentation.dialogs
 
 import android.Manifest
 import android.app.DatePickerDialog
@@ -6,19 +6,23 @@ import android.app.TimePickerDialog
 import android.content.ContentUris
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.CalendarContract
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
-import com.mechwv.placeeventmap.databinding.AddEventFragmentBinding
+import com.mechwv.placeeventmap.R
+import com.mechwv.placeeventmap.databinding.EventCreateDialogBinding
+import com.mechwv.placeeventmap.databinding.PlaceCreateDialogBinding
+import com.mechwv.placeeventmap.domain.model.Event
+import com.mechwv.placeeventmap.domain.model.Place
+import com.mechwv.placeeventmap.presentation.events.CalendarHandler
 import com.mechwv.placeeventmap.presentation.room.dto.DBPlaceDTO
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDateTime
@@ -26,10 +30,11 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 @AndroidEntryPoint
-class EventAddFragment: Fragment() {
-    private val viewModel: EventAddViewModel by viewModels()
-    private lateinit var binding: AddEventFragmentBinding
-
+class EventCreateDialog : DialogFragment() {
+    private lateinit var binding: EventCreateDialogBinding
+    private val viewModel: EventCreateViewModel by viewModels()
+    var name: String = ""
+    var placeUid = 0
     var temp: LocalDateTime? = null
     val calendar = Calendar.getInstance()
     var eventId: Long? = null
@@ -42,20 +47,44 @@ class EventAddFragment: Fragment() {
                 allAreGranted = allAreGranted && b
             }
             if(allAreGranted) {
-//                eventId = CalendarHandler.useCalendar(calendar, requireContext())
-//                viewModel.updatePlace(arguments?.get("place_id") as Int, eventId!!)
+                eventId = CalendarHandler.useCalendar(calendar,
+                    binding.placeNameText.text.toString(),
+                    binding.descText.text.toString(),
+                    requireContext())
+                Toast.makeText(
+                    context,
+                    eventId.toString(),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // 1.
+        setStyle(STYLE_NORMAL, R.style.Theme_App_Dialog_FullScreen)
+        if (arguments != null) {
+            val mArgs = requireArguments()
+            name = mArgs.getString("name").toString()
+            placeUid = mArgs.getInt("uid")
+        }
+    }
+
+    private fun goToCalendarIntent(eventID: Long){
+        val uri: Uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID)
+        val intent = Intent(Intent.ACTION_VIEW).setData(uri)
+        startActivity(intent)
+    }
+
+    /** The system calls this to get the DialogFragment's layout, regardless
+    of whether it's being displayed as a dialog or an embedded fragment. */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-        binding = AddEventFragmentBinding.inflate(layoutInflater, container, false)
-
+        binding = EventCreateDialogBinding.inflate(layoutInflater, container, false)
+        //TODO databinding
         val dateSetListener =
             DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
                 calendar.set(Calendar.YEAR, year)
@@ -68,7 +97,6 @@ class EventAddFragment: Fragment() {
                 calendar.set(Calendar.HOUR_OF_DAY, hour)
                 calendar.set(Calendar.MINUTE, minute)
             }
-
         binding.addButton.setOnClickListener {
             Toast.makeText(
                 context,
@@ -80,8 +108,17 @@ class EventAddFragment: Fragment() {
                 Manifest.permission.WRITE_CALENDAR,
             )
             activityResultLauncher.launch(appPerms)
-        }
+            viewModel.addEvent(Event(
+                name = binding.eventNameText.text.toString(),
+                description = binding.desc.text.toString(),
+                startTime = temp?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")).toString(),
+                locationId = placeUid
+            )).observe(viewLifecycleOwner) { eventId ->
+                viewModel.addEventToPlace(placeUid, eventId)
+            }
 
+//            dismiss()
+        }
         binding.pickTime.setOnClickListener {
 
             TimePickerDialog(requireContext(), timeSetListener,
@@ -89,9 +126,9 @@ class EventAddFragment: Fragment() {
                 calendar.get(Calendar.MINUTE), true).show()
 
             DatePickerDialog(requireContext(), dateSetListener,
-               calendar.get(Calendar.YEAR),
-               calendar.get(Calendar.MONTH),
-               calendar.get(Calendar.DAY_OF_MONTH)
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
             ).show()
             temp = LocalDateTime.ofInstant(calendar.toInstant(), calendar.timeZone.toZoneId())
         }
@@ -116,13 +153,20 @@ class EventAddFragment: Fragment() {
 //                ).show()
 //            }
 //        }
-
         return binding.root
     }
 
-    private fun goToCalendarIntent(eventID: Long){
-        val uri: Uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID)
-        val intent = Intent(Intent.ACTION_VIEW).setData(uri)
-        startActivity(intent)
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?
+    ) {
+        // 3.
+//        Log.d("FRAGMENT", "$longitude + $latitude")
+        binding.placeNameText.text = name
+//        binding.longitudeText.setText(longitude.toString())
+
+        requireDialog().window?.setWindowAnimations(
+            R.style.DialogAnimation
+        )
     }
 }

@@ -13,7 +13,7 @@ data class DBPlaceDTO(
     @ColumnInfo(name = "location_longitude") override var longitude: Double,
     @ColumnInfo(name = "location_name") override var name: String,
     @ColumnInfo(name = "location_description") override var description: String = "",
-    @ColumnInfo(name = "real_event_id") var real_event_id: Long? = null,
+    @ColumnInfo(name = "event_id") override var event_id: Long? = null,
     @ColumnInfo(name = "address") override var address: String? = "",
 ) : Place (
     uid,
@@ -21,7 +21,7 @@ data class DBPlaceDTO(
     longitude,
     name,
     description,
-    real_event_id,
+    event_id,
     address) {
 
 
@@ -30,6 +30,22 @@ data class DBPlaceDTO(
         place.latitude,
         place.longitude,
         place.name,
-        place.description
+        place.description,
+        place.event_id,
+        place.address
     )
+
+    companion object {
+        fun DBPlaceDTO.toPlace(): Place {
+            return Place(
+                id = this.id,
+                latitude = this.latitude,
+                longitude = this.longitude,
+                name = this.name,
+                description = this.description,
+                event_id = this.event_id,
+                address = this.address
+            )
+        }
+    }
 }

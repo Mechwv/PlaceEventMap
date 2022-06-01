@@ -2,14 +2,19 @@ package com.mechwv.placeeventmap.presentation.places
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.mechwv.placeeventmap.databinding.FragmentPlacesInfoBinding
+import com.mechwv.placeeventmap.presentation.dialogs.EventCreateDialog
+import com.mechwv.placeeventmap.presentation.room.dto.DBPlaceDTO
+import com.mechwv.placeeventmap.presentation.room.dto.DBPlaceDTO.Companion.toPlace
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 
@@ -25,10 +30,20 @@ class PlacesInfoFragment : Fragment() {
     ): View? {
         binding = FragmentPlacesInfoBinding.inflate(layoutInflater, container, false)
 
-        binding.watch.setOnClickListener {
+        binding.addEvent.setOnClickListener {
             val uid = arguments?.get("place_id") as Int
-            val action = PlacesInfoFragmentDirections.actionPlacesInfoFragment2ToEventAddFragment(uid)
-            findNavController().navigate(action)
+//            val action = PlacesInfoFragmentDirections.actionPlacesInfoFragment2ToEventAddFragment(uid)
+//            findNavController().navigate(action)
+            showDialog(binding.address.text.toString(), uid)
+        }
+
+        binding.watch.setOnClickListener {
+            viewModel.place.observe(viewLifecycleOwner) {
+//                Log.d("PLACE", it.event_id.toString())
+                viewModel.getEvent(it.event_id!!).observe(viewLifecycleOwner) { e ->
+                    Toast.makeText(context, e.name, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         binding.share.setOnClickListener {
@@ -53,11 +68,17 @@ class PlacesInfoFragment : Fragment() {
         return binding.root
     }
 
+    fun showDialog(name: String, uid: Int) {
+        val dialog = EventCreateDialog()
+        dialog.arguments = bundleOf("name" to name, "uid" to uid)
+        dialog.show(childFragmentManager, "tag")
+    }
+
     @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.getPlace(arguments?.get("place_id") as Int).observe(viewLifecycleOwner) { place ->
-//        Toast.makeText(context, "${place.latitude},${place.longitude}", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(context, "${}", Toast.LENGTH_SHORT).show()
             viewModel.getAddress(place).observe(viewLifecycleOwner) {
                 if (it != "")
                     binding.address.text = it

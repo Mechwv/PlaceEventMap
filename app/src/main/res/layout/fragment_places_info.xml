@@ -78,6 +78,12 @@
                 android:text="Посмотреть события" />
 
             <Button
+                android:id="@+id/add_event"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Добавить событие" />
+
+            <Button
                 android:id="@+id/share"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text="Создание события"
+        android:textAllCaps="true"
+        android:textSize="22sp"
+        android:fontFamily="sans-serif-condensed"
+        android:textStyle="bold"
+        android:layout_width="match_parent" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/normalMargin"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/event_name"
+                android:layout_height="48dp"
+                android:text="Название"
+                android:layout_marginEnd="@dimen/normalMargin"
+                android:padding="10dp"
+                android:textSize="18sp"
+                android:fontFamily="sans-serif-condensed"
+                android:textStyle="bold"
+                android:layout_width="match_parent" />
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_height="48dp"
+                android:text="Дата"
+                android:layout_marginEnd="@dimen/normalMargin"
+                android:padding="10dp"
+                android:textSize="18sp"
+                android:fontFamily="sans-serif-condensed"
+                android:textStyle="bold"
+                android:layout_width="match_parent" />
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_height="48dp"
+                android:text="Время"
+                android:layout_marginEnd="@dimen/normalMargin"
+                android:padding="10dp"
+                android:textSize="18sp"
+                android:fontFamily="sans-serif-condensed"
+                android:textStyle="bold"
+                android:layout_width="match_parent" />
+
+            <TextView
+                android:id="@+id/place_name"
+                android:layout_height="70dp"
+                android:text="Место \nпроведения"
+                android:layout_marginEnd="@dimen/normalMargin"
+                android:padding="10dp"
+                android:textSize="18sp"
+                android:fontFamily="sans-serif-condensed"
+                android:textStyle="bold"
+                android:layout_width="match_parent" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/event_name_text"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:ems="20"
+                android:hint="Type here"
+                android:inputType="textPersonName"
+                android:padding="8dp" />
+
+            <TextView
+                android:id="@+id/date_text"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:ems="20"
+                android:text="01.01.1980"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:fontFamily="sans-serif-condensed"
+                android:textStyle="bold"
+                android:padding="8dp" />
+
+            <TextView
+                android:id="@+id/time_text"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="12:05"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:fontFamily="sans-serif-condensed"
+                android:textStyle="bold"
+                android:padding="8dp" />
+            <TextView
+                android:id="@+id/place_name_text"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:minHeight="70dp"
+                android:layout_height="wrap_content"
+                android:text="Поселок Шедоуфиндов"
+                android:textSize="18sp"
+                android:fontFamily="sans-serif-condensed"
+                android:textStyle="bold"
+                android:padding="8dp" />
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/desc"
+            android:layout_height="96dp"
+            android:text="Описание"
+            android:gravity="center"
+            android:layout_marginEnd="@dimen/normalMargin"
+            android:padding="10dp"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif-condensed"
+            android:textStyle="bold"
+            android:layout_width="wrap_content" />
+
+        <EditText
+            android:id="@+id/desc_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="20"
+            android:gravity="top|start"
+            android:hint="прогулка в Поселке Шедоуфиндов"
+            android:inputType="textMultiLine"
+            android:minLines="1"
+            android:maxLines="2" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/pickTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Выбрать дату и время" />
+
+    <Button
+        android:id="@+id/receive"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Получить событие" />
+
+    <Button
+        android:id="@+id/watch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Посмотреть в календаре" />
+
+    <Button
+        android:id="@+id/add_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_party" />
+
+
+</LinearLayout>

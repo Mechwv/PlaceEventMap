@@ -12,12 +12,15 @@ import java.util.*
 
 class CalendarHandler {
     companion object {
-        fun useCalendar(calendar: Calendar, context: Context): Long? {
+        fun useCalendar(calendar: Calendar,
+                        title: String = "",
+                        description: String = "",
+                        context: Context): Long? {
             val datetime = ContentValues().apply {
                 put(CalendarContract.Events.DTSTART, calendar.timeInMillis)
                 put(CalendarContract.Events.DTEND,calendar.timeInMillis + 60000*60)
-                put(CalendarContract.Events.TITLE, "Dance club")
-                put(CalendarContract.Events.DESCRIPTION, "Group workout")
+                put(CalendarContract.Events.TITLE, title)
+                put(CalendarContract.Events.DESCRIPTION, description)
                 put(CalendarContract.Events.CALENDAR_ID, 3)
                 put(
                     CalendarContract.Events.EVENT_TIMEZONE,

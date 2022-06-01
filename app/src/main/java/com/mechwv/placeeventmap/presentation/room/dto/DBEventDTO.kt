@@ -8,7 +8,7 @@ import com.mechwv.placeeventmap.domain.model.Event
 @Entity(tableName = "events")
 data class DBEventDTO(
     @PrimaryKey(autoGenerate = true)
-    var uid: Int,
+    var uid: Long,
     @ColumnInfo(name = "event_name") override var  name: String,
     @ColumnInfo(name = "event_description") override var  description: String? = null,
     @ColumnInfo(name = "event_time") var eventStartTime: String,
@@ -20,8 +20,11 @@ data class DBEventDTO(
     eventStartTime,
     locationId
 ) {
-//    fun convert() {
-//        val secondFormatter = DateTimeFormatter.ofPattern("MM/dd/uuuu hh:mm:ss a", Locale.)
-//        re
-//    }
+   constructor(event: Event) : this(
+       event.id,
+       event.name,
+       event.description,
+       event.startTime,
+       event.locationId
+    )
 }
