@@ -60,7 +60,7 @@ object Common {
                                 .featureMember
                             if (searchResponse.isNotEmpty()) {
                                 geoPlace.name =
-                                    searchResponse[0].geoObject.metaDataProperty.geocoderMetaData.text
+                                    searchResponse[0].geoObject?.metaDataProperty?.geocoderMetaData!!.text ?: ""
                                 val pos = searchResponse[0].geoObject.point?.pos?.split(" ")
                                 geoPlace.lat = pos?.get(1)!!.toDouble()
                                 geoPlace.long = pos?.get(0)!!.toDouble()

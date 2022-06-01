@@ -1,4 +1,5 @@
 package com.mechwv.placeeventmap.presentation.retrofit.model.geoApi
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 
 data class GeocodeResult(
@@ -132,7 +133,18 @@ data class Locality(
     @JsonProperty("LocalityName")
     val localityName: String?=null,
     @JsonProperty("Thoroughfare")
-    val thoroughfare: Thoroughfare?=null
+    val thoroughfare: Thoroughfare?=null,
+    @JsonProperty("DependentLocality")
+    @JsonIgnore
+    val dependentLocality: DependentLocality?=null
+)
+
+data class DependentLocality(
+    @JsonProperty("DependentLocalityName")
+    val dependentLocalityName: String,
+    @JsonProperty("DependentLocality")
+    @JsonIgnore(true)
+    val dependentLocality: DependentLocality?=null
 )
 
 data class Thoroughfare(

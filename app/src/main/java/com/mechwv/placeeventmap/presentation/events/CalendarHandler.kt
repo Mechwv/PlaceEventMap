@@ -6,6 +6,7 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.CalendarContract
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.util.*
@@ -29,12 +30,14 @@ class CalendarHandler {
             }
             var eventId: Long? = null
             runBlocking {
-                launch {
+                val job = GlobalScope.launch {
                     val contentResolver = context.contentResolver
-                    val uri: Uri? = contentResolver?.insert(CalendarContract.Events.CONTENT_URI, datetime)
+                    val uri: Uri? =
+                        contentResolver?.insert(CalendarContract.Events.CONTENT_URI, datetime)
                     eventId = uri?.lastPathSegment?.toLong()
                 }
-            }.isCompleted
+                job.join()
+            }
             return eventId
     }
         fun getEvent(eventID: Long, context: Context): String {

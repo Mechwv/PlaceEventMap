@@ -140,22 +140,14 @@ class EventCreateDialog : DialogFragment() {
             eventId?.let { it1 -> goToCalendarIntent(it1) }
         }
 
-//        binding.receive.setOnClickListener {
-//            viewModel.getPlace(arguments?.get("place_id") as Int).observe(viewLifecycleOwner) { place ->
-//                val place1 = place as DBPlaceDTO
-//                eventId = place1.real_event_id
-//                Toast.makeText(
-//                    context,
-//                    eventId?.let { it1 ->
-//                        CalendarHandler.getEvent(
-//                            it1,
-//                            requireContext()
-//                        ) + "Place_id: ${arguments?.get("place_id")}"
-//                    },
-//                    Toast.LENGTH_SHORT
-//                ).show()
-//            }
-//        }
+        binding.receive.setOnClickListener {
+            Toast.makeText(context, eventId?.let { it1 ->
+                CalendarHandler.getEvent(
+                    it1,
+                    requireContext()
+                )
+            } + "Place_id: ${arguments?.get("place_id")}", Toast.LENGTH_SHORT).show()
+        }
         return binding.root
     }
 
