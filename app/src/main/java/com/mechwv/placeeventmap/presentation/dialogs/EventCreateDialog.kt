@@ -48,8 +48,8 @@ class EventCreateDialog : DialogFragment() {
             }
             if(allAreGranted) {
                 eventId = CalendarHandler.useCalendar(calendar,
-                    binding.placeNameText.text.toString(),
-                    binding.descText.text.toString(),
+                    binding.eventNameText.text.toString(),
+                    "Адрес: ${binding.placeNameText.text}\nОписание: ${binding.descText.text}",
                     requireContext())
                 Toast.makeText(
                     context,
@@ -131,6 +131,9 @@ class EventCreateDialog : DialogFragment() {
                 calendar.get(Calendar.DAY_OF_MONTH)
             ).show()
             temp = LocalDateTime.ofInstant(calendar.toInstant(), calendar.timeZone.toZoneId())
+
+            binding.dateText.text =  temp?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")).toString()
+            binding.timeText.text =  temp?.format(DateTimeFormatter.ofPattern("HH:mm")).toString()
         }
 
         binding.watch.setOnClickListener {

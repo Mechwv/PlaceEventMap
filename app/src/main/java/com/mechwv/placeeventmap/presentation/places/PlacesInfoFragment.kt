@@ -34,7 +34,7 @@ class PlacesInfoFragment : Fragment() {
             val uid = arguments?.get("place_id") as Int
 //            val action = PlacesInfoFragmentDirections.actionPlacesInfoFragment2ToEventAddFragment(uid)
 //            findNavController().navigate(action)
-            showDialog(binding.address.text.toString(), uid)
+            showDialog(binding.placeName.text.toString(), uid)
         }
 
         binding.watch.setOnClickListener {
