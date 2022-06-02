@@ -3,9 +3,11 @@ package com.mechwv.placeeventmap.presentation.events
 import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import android.provider.CalendarContract
+import androidx.core.content.ContextCompat.startActivity
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -16,13 +18,15 @@ class CalendarHandler {
         fun useCalendar(calendar: Calendar,
                         title: String = "",
                         description: String = "",
+                        address: String = "",
                         context: Context): Long? {
             val datetime = ContentValues().apply {
                 put(CalendarContract.Events.DTSTART, calendar.timeInMillis)
                 put(CalendarContract.Events.DTEND,calendar.timeInMillis + 60000*60)
                 put(CalendarContract.Events.TITLE, title)
                 put(CalendarContract.Events.DESCRIPTION, description)
-                put(CalendarContract.Events.CALENDAR_ID, 3)
+                put(CalendarContract.Events.CALENDAR_ID, 1)
+                put(CalendarContract.Events.EVENT_LOCATION, address)
                 put(
                     CalendarContract.Events.EVENT_TIMEZONE,
                     CalendarContract.CalendarCache.TIMEZONE_TYPE_AUTO
@@ -41,8 +45,9 @@ class CalendarHandler {
             return eventId
     }
         fun getEvent(eventID: Long, context: Context): String {
-//        val uri: Uri = CalendarContract.Calendars.CONTENT_URI
-            val uri: Uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID)
+        val uri: Uri = CalendarContract.Calendars.CONTENT_URI
+//            val uri: Uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID)
+//            val uri: Uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID)
             val contentResolver = context.contentResolver
 
             val EVENT_PROJECTION: Array<String> = arrayOf(
@@ -56,10 +61,10 @@ class CalendarHandler {
             val PROJECTION_DESCRIPTION: Int = 2
             val PROJECTION_OWNER_ACCOUNT_INDEX: Int = 3
 
-//        val selection: String = "_id = ?"
-//        val selectionArgs: Array<String> = arrayOf(eventID.toString())
-//        val cur: Cursor? = contentResolver?.query(uri, EVENT_PROJECTION, selection, selectionArgs, null)
-            val cur: Cursor? = contentResolver?.query(uri, EVENT_PROJECTION, "", arrayOf(), null)
+        val selection: String = "_id = ?"
+        val selectionArgs: Array<String> = arrayOf(eventID.toString())
+        val cur: Cursor? = contentResolver?.query(uri, EVENT_PROJECTION, selection, selectionArgs, null)
+//            val cur: Cursor? = contentResolver?.query(uri, EVENT_PROJECTION, "", arrayOf(), null)
             if (cur != null) {
                 while (cur.moveToNext()) {
                     val calID: Long = cur.getLong(PROJECTION_CALENDAR_ID)

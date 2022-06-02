@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import com.mechwv.placeeventmap.R
@@ -30,6 +31,7 @@ class EventCreateDialog : DialogFragment() {
     private lateinit var binding: EventCreateDialogBinding
     private val viewModel: EventCreateViewModel by viewModels()
     var placeName: String = ""
+    var address: String = ""
     var placeUid = 0
     var temp: LocalDateTime? = null
     val calendar = Calendar.getInstance()
@@ -46,7 +48,19 @@ class EventCreateDialog : DialogFragment() {
                 eventId = CalendarHandler.useCalendar(calendar,
                     binding.eventNameText.text.toString(),
                     "Адрес: ${binding.placeNameText.text}\nОписание: ${binding.descText.text}",
+                    address,
                     requireContext())
+
+//                val intent = Intent(Intent.ACTION_INSERT)
+//                    .setData(CalendarContract.Events.CONTENT_URI)
+//                    .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, calendar.timeInMillis)
+//                    .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, calendar.timeInMillis + 60000*60)
+//                    .putExtra(CalendarContract.Events.TITLE, binding.eventNameText.text)
+//                    .putExtra(CalendarContract.Events.DESCRIPTION, binding.descText.text)
+//                    .putExtra(CalendarContract.Events.EVENT_LOCATION, binding.placeNameText.text)
+//                startActivity(intent)
+
+
                 Toast.makeText(
                     context,
                     eventId.toString(),
@@ -62,6 +76,7 @@ class EventCreateDialog : DialogFragment() {
         if (arguments != null) {
             val mArgs = requireArguments()
             placeName = mArgs.getString("name").toString()
+            address = mArgs.getString("address").toString()
             placeUid = mArgs.getInt("uid")
         }
     }

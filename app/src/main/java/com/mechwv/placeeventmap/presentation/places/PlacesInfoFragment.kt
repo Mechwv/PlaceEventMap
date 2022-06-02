@@ -2,7 +2,6 @@ package com.mechwv.placeeventmap.presentation.places
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,8 +12,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.mechwv.placeeventmap.databinding.FragmentPlacesInfoBinding
 import com.mechwv.placeeventmap.presentation.dialogs.EventCreateDialog
-import com.mechwv.placeeventmap.presentation.room.dto.DBPlaceDTO
-import com.mechwv.placeeventmap.presentation.room.dto.DBPlaceDTO.Companion.toPlace
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 
@@ -34,7 +31,7 @@ class PlacesInfoFragment : Fragment() {
             val uid = arguments?.get("place_id") as Int
 //            val action = PlacesInfoFragmentDirections.actionPlacesInfoFragment2ToEventAddFragment(uid)
 //            findNavController().navigate(action)
-            showDialog(binding.placeName.text.toString(), uid)
+            showDialog(binding.placeName.text.toString(), uid, binding.address.text.toString())
         }
 
         binding.watch.setOnClickListener {
@@ -68,9 +65,9 @@ class PlacesInfoFragment : Fragment() {
         return binding.root
     }
 
-    fun showDialog(name: String, uid: Int) {
+    fun showDialog(name: String, uid: Int, address: String) {
         val dialog = EventCreateDialog()
-        dialog.arguments = bundleOf("name" to name, "uid" to uid)
+        dialog.arguments = bundleOf("name" to name, "uid" to uid, "address" to address)
         dialog.show(childFragmentManager, "tag")
     }
 
