@@ -16,25 +16,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-<!--        <EditText-->
-<!--            android:id="@+id/search_edit"-->
-<!--            android:layout_width="fill_parent"-->
-<!--            android:layout_height="0dp"-->
-<!--            android:layout_marginStart="8dp"-->
-<!--            android:layout_marginTop="16dp"-->
-<!--            android:layout_marginEnd="8dp"-->
-<!--            android:layout_weight="1"-->
-<!--            android:drawableStart="@drawable/ic_baseline_search_24"-->
-<!--            android:drawablePadding="10dp"-->
-<!--            android:hint="Введите название или координаты"-->
-<!--            android:imeOptions="actionSearch"-->
-<!--            android:inputType="text"-->
-<!--            android:maxLines="1"-->
-<!--            android:padding="15dp"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent" />-->
-
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/search_container"
             android:layout_width="fill_parent"
@@ -64,7 +45,7 @@
             android:id="@+id/suggest_result"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible"
+            android:visibility="invisible"
             android:background="@color/md_theme_light_secondaryContainer"
             tools:listitem="@layout/material_list_item_single_line"
             app:layout_constraintTop_toBottomOf="@+id/search_container" />

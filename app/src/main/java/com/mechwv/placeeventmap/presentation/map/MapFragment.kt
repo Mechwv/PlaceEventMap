@@ -21,13 +21,15 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
-import com.mechwv.placeeventmap.presentation.dialogs.PlaceCreateDialog
 import com.mechwv.placeeventmap.R
 import com.mechwv.placeeventmap.databinding.MapFragmentBinding
+import com.mechwv.placeeventmap.domain.model.Place
+import com.mechwv.placeeventmap.presentation.dialogs.PlaceCreateDialog
 import com.mechwv.placeeventmap.presentation.retrofit.model.geoApi.GeoPlace
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.BoundingBox
+import com.yandex.mapkit.geometry.Circle
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.location.*
 import com.yandex.mapkit.map.*
@@ -42,6 +44,7 @@ import com.yandex.runtime.network.RemoteError
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
+import java.util.*
 
 
 @ExperimentalCoroutinesApi
@@ -103,7 +106,7 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
 
         override fun onMapTap(map: Map, point: Point) {
             Log.d("Map touch","You have touched $point")
-            createPlacemark(point, "", "")
+            createPlacemark(point, PlacemarkData())
             showDialog(point)
         }
     }
@@ -249,10 +252,11 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
     fun setMarkers() {
         viewModel.DBPlaces.observe(viewLifecycleOwner) {
             it.forEach { p ->
-                mapObjects?.addPlacemark(
-                    Point(p.latitude, p.longitude),
-                    ImageProvider.fromResource(context, R.drawable.search_result)
-                )
+                createPlacemark(Point(p.latitude, p.longitude), PlacemarkData(p.name, p.description))
+//                mapObjects?.addPlacemark(
+//                    Point(p.latitude, p.longitude),
+//                    ImageProvider.fromResource(context, R.drawable.search_result)
+//                )
             }
         }
     }
@@ -270,7 +274,7 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
             viewModel.getPlace(uid).observe(viewLifecycleOwner) {
                 Log.e("COORDINATES", "${it.latitude}, ${it.longitude}")
                 moveCamera(Point(it.latitude, it.longitude), COMFORTABLE_ZOOM_LEVEL.toFloat())
-                createPlacemark(Point(it.latitude, it.longitude),it.name, it.description)
+                createPlacemark(Point(it.latitude, it.longitude), PlacemarkData(it.name, it.description))
             }
         } else {
             locationManager = MapKitFactory.getInstance().createLocationManager()
@@ -290,15 +294,40 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
         )
     }
 
-    private fun createPlacemark(geoPoint: Point, name: String, description: String) {
+    data class PlacemarkData(
+        val name: String = "",
+        val description: String = ""
+    )
+
+    private fun createPlacemark(geoPoint: Point, data: PlacemarkData) {
         lifecycleScope.launch{
-            val imageProvider = AnimatedImageProvider.fromAsset(context, "sf1.png")
+            val imageProvider = AnimatedImageProvider.fromAsset(context, "star.png")
             val animatedPlacemark =
-                mapObjects!!.addPlacemark(geoPoint, imageProvider, IconStyle().setScale(0.7f))
+                mapObjects!!.addPlacemark(geoPoint, imageProvider, IconStyle().setScale(1f))
+            animatedPlacemark.userData = data
+            animatedPlacemark.addTapListener(mapObjectTapListener)
             animatedPlacemark.useAnimation().play()
         }
         return
     }
+
+    private val mapObjectTapListener =
+        MapObjectTapListener { mapObject, point ->
+            if (mapObject is PlacemarkMapObject) {
+                val userData = mapObject.userData
+                if (userData is PlacemarkData) {
+                    val placemarkData : PlacemarkData = userData
+                    val toast = Toast.makeText(
+                        context,
+                        "Circle with id " + placemarkData.name + " and description '"
+                                + placemarkData.description + "' tapped",
+                        Toast.LENGTH_SHORT
+                    )
+                    toast.show()
+                }
+            }
+            true
+        }
 
     override fun onStop() {
         super.onStop()
