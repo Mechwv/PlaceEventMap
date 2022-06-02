@@ -10,45 +10,55 @@
         android:id="@+id/mapview"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="match_parent">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/search_container"
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:padding="10dp"
-            app:endIconMode="custom"
-            app:endIconDrawable="@drawable/ic_baseline_search_24"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            style="?attr/textInputFilledStyle"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/search_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionSearch"
-                android:inputType="text"
-                android:maxLines="1"
-                android:hint="Введите название или координаты"
-                />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <ListView
-            android:id="@+id/suggest_result"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:background="@color/md_theme_light_secondaryContainer"
-            tools:listitem="@layout/material_list_item_single_line"
-            app:layout_constraintTop_toBottomOf="@+id/search_container" />
+            android:orientation="horizontal">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/search_container"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:padding="10dp"
+                app:endIconMode="custom"
+                app:endIconDrawable="@drawable/ic_baseline_search_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                style="?attr/textInputFilledStyle"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/search_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:hint="Введите название или координаты"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ListView
+                android:id="@+id/suggest_result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                android:background="@color/md_theme_light_secondaryContainer"
+                tools:listitem="@layout/material_list_item_single_line"
+                app:layout_constraintTop_toBottomOf="@+id/search_container" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+        <include
+            android:id="@+id/bottom_sheet"
+            layout="@layout/bottom_sheet_dialog_layout" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </RelativeLayout>

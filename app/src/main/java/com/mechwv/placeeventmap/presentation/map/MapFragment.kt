@@ -9,10 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.ArrayAdapter
-import android.widget.ListView
-import android.widget.RelativeLayout
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
@@ -20,8 +17,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.mechwv.placeeventmap.R
+import com.mechwv.placeeventmap.databinding.BottomSheetDialogLayoutBinding
 import com.mechwv.placeeventmap.databinding.MapFragmentBinding
 import com.mechwv.placeeventmap.domain.model.Place
 import com.mechwv.placeeventmap.presentation.dialogs.PlaceCreateDialog
@@ -29,7 +28,6 @@ import com.mechwv.placeeventmap.presentation.retrofit.model.geoApi.GeoPlace
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.BoundingBox
-import com.yandex.mapkit.geometry.Circle
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.location.*
 import com.yandex.mapkit.map.*
@@ -44,7 +42,6 @@ import com.yandex.runtime.network.RemoteError
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
-import java.util.*
 
 
 @ExperimentalCoroutinesApi
@@ -67,6 +64,10 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
     private lateinit var layout: RelativeLayout
     private lateinit var supportFragmentManager: FragmentManager
 
+    private lateinit var mBottomSheetLayout: LinearLayout
+    private lateinit var mBottomSheetLayoutBinding: BottomSheetDialogLayoutBinding
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+
     //Constants
     private val DESIRED_ACCURACY = 0.0
     private val MINIMAL_TIME: Long = 0
@@ -82,10 +83,7 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
         Point(CENTER.latitude + BOX_SIZE, CENTER.longitude + BOX_SIZE)
     )
     private val SEARCH_OPTIONS = SuggestOptions().setSuggestTypes(
-        SuggestType.GEO.value or
-                SuggestType.BIZ.value or
-                SuggestType.TRANSIT.value
-    )
+        SuggestType.GEO.value or SuggestType.BIZ.value or SuggestType.TRANSIT.value)
 
     private val RESULT_NUMBER_LIMIT = 5
 
@@ -106,7 +104,10 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
 
         override fun onMapTap(map: Map, point: Point) {
             Log.d("Map touch","You have touched $point")
-            createPlacemark(point, PlacemarkData())
+            createPlacemark(point, null)
+            if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
             showDialog(point)
         }
     }
@@ -160,6 +161,10 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
         mapView = binding.mapview
         layout = binding.mapFragment
 
+        mBottomSheetLayoutBinding = binding.bottomSheet
+        mBottomSheetLayout = binding.bottomSheet.bottomSheetLayout
+        bottomSheetBehavior = BottomSheetBehavior.from(mBottomSheetLayout)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
         suggestResultView = binding.suggestResult
         resultAdapter = ArrayAdapter(
@@ -168,7 +173,6 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
                 android.R.id.text1,
                 suggestResult
             )
-
         suggestResultView?.adapter = resultAdapter
         suggestResultView?.setOnItemClickListener { adapterView, view, pos, id ->
             val element = adapterView?.getItemAtPosition(pos)
@@ -252,7 +256,7 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
     fun setMarkers() {
         viewModel.DBPlaces.observe(viewLifecycleOwner) {
             it.forEach { p ->
-                createPlacemark(Point(p.latitude, p.longitude), PlacemarkData(p.name, p.description))
+                createPlacemark(Point(p.latitude, p.longitude), p)
 //                mapObjects?.addPlacemark(
 //                    Point(p.latitude, p.longitude),
 //                    ImageProvider.fromResource(context, R.drawable.search_result)
@@ -274,7 +278,7 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
             viewModel.getPlace(uid).observe(viewLifecycleOwner) {
                 Log.e("COORDINATES", "${it.latitude}, ${it.longitude}")
                 moveCamera(Point(it.latitude, it.longitude), COMFORTABLE_ZOOM_LEVEL.toFloat())
-                createPlacemark(Point(it.latitude, it.longitude), PlacemarkData(it.name, it.description))
+                createPlacemark(Point(it.latitude, it.longitude), it)
             }
         } else {
             locationManager = MapKitFactory.getInstance().createLocationManager()
@@ -299,7 +303,7 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
         val description: String = ""
     )
 
-    private fun createPlacemark(geoPoint: Point, data: PlacemarkData) {
+    private fun createPlacemark(geoPoint: Point, data: Place?) {
         lifecycleScope.launch{
             val imageProvider = AnimatedImageProvider.fromAsset(context, "star.png")
             val animatedPlacemark =
@@ -315,12 +319,16 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
         MapObjectTapListener { mapObject, point ->
             if (mapObject is PlacemarkMapObject) {
                 val userData = mapObject.userData
-                if (userData is PlacemarkData) {
-                    val placemarkData : PlacemarkData = userData
+                if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_HIDDEN) {
+                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                }
+                if (userData is Place) {
+                    val place : Place = userData
+                    mBottomSheetLayoutBinding.place = place
                     val toast = Toast.makeText(
                         context,
-                        "Circle with id " + placemarkData.name + " and description '"
-                                + placemarkData.description + "' tapped",
+                        "Place: " + place.name + " description '"
+                                + place.description + "' tapped",
                         Toast.LENGTH_SHORT
                     )
                     toast.show()
