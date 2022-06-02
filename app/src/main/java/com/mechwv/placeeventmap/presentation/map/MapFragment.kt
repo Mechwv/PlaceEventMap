@@ -104,7 +104,7 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
 
         override fun onMapTap(map: Map, point: Point) {
             Log.d("Map touch","You have touched $point")
-            createPlacemark(point, null)
+            createPlacemark(point, null, "animation.png")
             if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             }
@@ -151,8 +151,7 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
 
         val appPerms = arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        )
+            Manifest.permission.ACCESS_COARSE_LOCATION)
 
         val searchEdit = binding.searchContainer
         val searchText = binding.searchText
@@ -298,14 +297,9 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
         )
     }
 
-    data class PlacemarkData(
-        val name: String = "",
-        val description: String = ""
-    )
-
-    private fun createPlacemark(geoPoint: Point, data: Place?) {
+    private fun createPlacemark(geoPoint: Point, data: Place?, assetName: String = "star.png") {
         lifecycleScope.launch{
-            val imageProvider = AnimatedImageProvider.fromAsset(context, "star.png")
+            val imageProvider = AnimatedImageProvider.fromAsset(context, assetName)
             val animatedPlacemark =
                 mapObjects!!.addPlacemark(geoPoint, imageProvider, IconStyle().setScale(1f))
             animatedPlacemark.userData = data
@@ -348,7 +342,6 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
         super.onStart()
         mapView?.onStart()
         MapKitFactory.getInstance().onStart()
-
         subscribeToLocationUpdate()
     }
 
@@ -363,16 +356,6 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
                 myLocationListener
             )
         }
-    }
-
-    // Блок с поиском таких мест, как кафе, заправки и т п
-    private fun submitQuery(query: String) {
-        searchSession = searchManager.submit(
-            query,
-            VisibleRegionUtils.toPolygon(mapView!!.map.visibleRegion),
-            SearchOptions(),
-            this
-        )
     }
 
     override fun onSearchResponse(response: Response) {
@@ -426,5 +409,12 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
         suggestSession!!.suggest(query, BOUNDING_BOX, SEARCH_OPTIONS, this)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mapObjects?.clear()
+        mapView?.onStop()
+        MapKitFactory.getInstance().onStop()
+        locationManager?.unsubscribe(myLocationListener)
+    }
 
 }
