@@ -40,8 +40,8 @@ object Common {
         return suspendCancellableCoroutine { continuation ->
             val mService = retrofitService
             var geoPlace = GeoPlace()
-            var name = ""
-//            Log.e("RETROFIT_REQUEST","${place.latitude},${place.longitude}")
+            var name = "Такого места не существует"
+            Log.e("RETROFIT_REQUEST","${place?.longitude},${place?.latitude}")
             if (place != null || address != null) {
 
                 val searchString: String = address ?: "${place?.longitude},${place?.latitude}"
@@ -53,26 +53,27 @@ object Common {
                     @RequiresApi(Build.VERSION_CODES.N)
                     override fun onResponse(call: Call<GeocodeResult>, response: Response<GeocodeResult>) {
                         if (response.isSuccessful) {
-                            Log.d("SEARCH", response.body().toString())
+                            Log.e("SEARCH", response.body().toString())
                             val searchResponse = (response.body() as GeocodeResult)
                                 .response
                                 .geoObjectCollection
-                                .featureMember
-                            if (searchResponse.isNotEmpty()) {
-                                geoPlace.name =
-                                    searchResponse[0].geoObject?.metaDataProperty?.geocoderMetaData!!.text ?: ""
-                                val pos = searchResponse[0].geoObject.point?.pos?.split(" ")
-                                geoPlace.lat = pos?.get(1)!!.toDouble()
-                                geoPlace.long = pos?.get(0)!!.toDouble()
-                                    searchResponse[0].geoObject.metaDataProperty.geocoderMetaData.text
-                                continuation.resume(geoPlace)
-                                Log.e("RETROFIT_SUCCESS", name)
+                            val featureMember = searchResponse.featureMember
+                            if (featureMember.isNotEmpty()) {
+                                    geoPlace.name =
+                                        featureMember[0]!!.geoObject!!.metaDataProperty!!.geocoderMetaData.text
+                                    val pos = featureMember[0]!!.geoObject!!.point?.pos?.split(" ")
+                                    geoPlace.lat = pos?.get(1)!!.toDouble()
+                                    geoPlace.long = pos[0].toDouble()
+                                    featureMember[0]!!.geoObject!!.metaDataProperty!!.geocoderMetaData.text
+                                    continuation.resume(geoPlace)
+                                    Log.e("RETROFIT_SUCCESS", name)
                                 return
                             }
                         }
                         if (continuation.isActive) {
                             val exception = IllegalStateException(response.errorBody()?.string())
                             Log.e("RETROFIT_ERROR", "Retrofit failure!")
+                            Log.e("SEARCH", response.body().toString())
                             continuation.resumeWithException(exception)
                         }
                     }
@@ -82,7 +83,7 @@ object Common {
                             continuation.cancel()
                             return
                         }
-                        Log.e("RETROFIT_ERROR", "Retrofit failure!", t)
+                        Log.e("RETROFIT_ERROR", "Retrofit asd!", t)
                         continuation.resumeWithException(t)
                     }
                 })

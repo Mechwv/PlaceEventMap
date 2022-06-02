@@ -1,6 +1,5 @@
 package com.mechwv.placeeventmap.presentation.retrofit.model.geoApi
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.*
 
 data class GeocodeResult(
     @JsonProperty("response")
@@ -14,14 +13,15 @@ data class Response(
 
 data class GeoObjectCollection(
     @JsonProperty("featureMember")
-    val featureMember: List<FeatureMember>,
+    val featureMember: MutableList<FeatureMember> = mutableListOf(),
     @JsonProperty("metaDataProperty")
     val metaDataProperty: MetaDataPropertyX
 )
 
-data class FeatureMember(
+@JsonInclude(JsonInclude.Include.NON_NULL)
+class FeatureMember(
     @JsonProperty("GeoObject")
-    val geoObject: GeoObject
+    val geoObject: GeoObject?
 )
 
 data class MetaDataPropertyX(
@@ -29,15 +29,16 @@ data class MetaDataPropertyX(
     val geocoderResponseMetaData: GeocoderResponseMetaData
 )
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 data class GeoObject(
     @JsonProperty("boundedBy")
     val boundedBy: BoundedBy?=null,
     @JsonProperty("description")
-    val description: String,
+    val description: String?,
     @JsonProperty("metaDataProperty")
-    val metaDataProperty: MetaDataProperty,
+    val metaDataProperty: MetaDataProperty?=null,
     @JsonProperty("name")
-    val name: String,
+    val name: String?,
     @JsonProperty("Point")
     val point: Point?=null
 )
@@ -77,6 +78,7 @@ data class GeocoderMetaData(
     val text: String
 )
 
+@JsonIgnoreProperties(ignoreUnknown=true)
 data class Address(
     @JsonProperty("Components")
     val components: List<Component>,
@@ -88,6 +90,7 @@ data class Address(
     val postalCode: String?=null
 )
 
+@JsonIgnoreProperties(ignoreUnknown=true)
 data class AddressDetails(
     @JsonProperty("Country")
     val country: Country?=null,
@@ -95,6 +98,7 @@ data class AddressDetails(
     val address: String?=null
 )
 
+@JsonIgnoreProperties(ignoreUnknown=true)
 data class Component(
     @JsonProperty("kind")
     val kind: String,
@@ -102,6 +106,7 @@ data class Component(
     val name: String
 )
 
+@JsonIgnoreProperties(ignoreUnknown=true)
 data class Country(
     @JsonProperty("AddressLine")
     val addressLine: String,
@@ -113,6 +118,7 @@ data class Country(
     val countryNameCode: String?=null
 )
 
+@JsonIgnoreProperties(ignoreUnknown=true)
 data class AdministrativeArea(
     @JsonProperty("AdministrativeAreaName")
     val administrativeAreaName: String?=null,
@@ -122,6 +128,7 @@ data class AdministrativeArea(
     val locality: Locality?=null
 )
 
+@JsonIgnoreProperties(ignoreUnknown=true)
 data class SubAdministrativeArea(
     @JsonProperty("SubAdministrativeAreaName")
     val subAdministrativeAreaName: String?=null,
@@ -129,6 +136,7 @@ data class SubAdministrativeArea(
     val locality: Locality?=null
 )
 
+@JsonIgnoreProperties(ignoreUnknown=true)
 data class Locality(
     @JsonProperty("LocalityName")
     val localityName: String?=null,
@@ -139,6 +147,7 @@ data class Locality(
     val dependentLocality: DependentLocality?=null
 )
 
+@JsonIgnoreProperties(ignoreUnknown=true)
 data class DependentLocality(
     @JsonProperty("DependentLocalityName")
     val dependentLocalityName: String,
@@ -147,6 +156,7 @@ data class DependentLocality(
     val dependentLocality: DependentLocality?=null
 )
 
+@JsonIgnoreProperties(ignoreUnknown=true)
 data class Thoroughfare(
     @JsonProperty("Premise")
     val premise: Premise?=null,
@@ -154,6 +164,7 @@ data class Thoroughfare(
     val thoroughfareName: String?=null
 )
 
+@JsonIgnoreProperties(ignoreUnknown=true)
 data class Premise(
     @JsonProperty("PostalCode")
     val postalCode: PostalCode?=null,
@@ -161,11 +172,13 @@ data class Premise(
     val premiseNumber: String?=null
 )
 
+@JsonIgnoreProperties(ignoreUnknown=true)
 data class PostalCode(
     @JsonProperty("PostalCodeNumber")
     val postalCodeNumber: String?=null
 )
 
+@JsonIgnoreProperties(ignoreUnknown=true)
 data class GeocoderResponseMetaData(
     @JsonProperty("found")
     val found: String,
