@@ -1,4 +1,4 @@
-package com.mechwv.placeeventmap.presentation.dialogs
+package com.mechwv.placeeventmap.presentation.events
 
 import android.util.Log
 import androidx.lifecycle.*
@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class EventCreateViewModel @Inject constructor(
+class EventListViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val placeRep: PlaceRepositoryImpl,
     private val eventRep: EventRepositoryImpl,
@@ -28,6 +28,12 @@ class EventCreateViewModel @Inject constructor(
             }
             job.join()
         }
+    }
+
+    fun getDBEvents(): LiveData<List<Event>> {
+        val a = eventRep.getEvents()
+        Log.e("Repository: ", a.value.toString())
+        return a
     }
 
     fun addEventToPlace(placeId: Int, eventId: Long) {

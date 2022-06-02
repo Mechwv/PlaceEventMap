@@ -5,5 +5,7 @@ open class Event(
     open var name: String,
     open var description: String? = null,
     open var startTime: String,
-    open var locationId : Int
+    open var locationId : Int,
+    open var placeName: String
+
 )

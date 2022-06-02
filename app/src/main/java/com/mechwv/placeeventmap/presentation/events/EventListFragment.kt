@@ -1,4 +1,4 @@
-package com.mechwv.placeeventmap.presentation.places
+package com.mechwv.placeeventmap.presentation.events
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -17,15 +17,15 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlin.random.Random
 
 @AndroidEntryPoint
-class PlacesListFragment : Fragment(), PlacesListAdapter.onItemClickListener {
+class EventListFragment : Fragment(), EventListAdapter.onItemClickListener {
 
     private lateinit var binding: PlacesListFragmentBinding
 
     companion object {
-        fun newInstance() = PlacesListFragment()
+        fun newInstance() = EventListFragment()
     }
 
-    private val viewModel: PlacesViewModel by viewModels()
+    private val viewModel: EventListViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,38 +43,28 @@ class PlacesListFragment : Fragment(), PlacesListAdapter.onItemClickListener {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-                viewModel.deletePlace(
-                    (binding.placesRecyclerView.adapter as PlacesListAdapter).data[position]
-                )
+//                val position = viewHolder.adapterPosition
+//                viewModel.deletePlace(
+//                    (binding.placesRecyclerView.adapter as PlacesListAdapter).data[position]
+//                )
             }
         }).attachToRecyclerView(binding.placesRecyclerView)
-
-        binding.placesAddButton.setOnClickListener {
-            viewModel.addPlace(Place(
-                0,
-                String.format("%.7f",Random.nextDouble(-90.0, 90.0)).replace(",", ".").toDouble(),
-                String.format("%.7f",Random.nextDouble(-180.0, 180.0)).replace(",", ".").toDouble(),
-                "CringePlace + ${Random.nextInt(1000)}",
-                "I have bouht + ${Random.nextInt(1000)} bottles of pepsi there",
-            null))
-        }
 
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getDBPlaces().observe(viewLifecycleOwner) {
-            binding.placesRecyclerView.adapter = PlacesListAdapter(it!!, this)
+        viewModel.getDBEvents().observe(viewLifecycleOwner) {
+            binding.placesRecyclerView.adapter = EventListAdapter(it!!, this)
         }
 
     }
 
     override fun onItemClick(position: Int) {
-        val uid = (((binding.placesRecyclerView.adapter as PlacesListAdapter).data[position]) as DBPlaceDTO).uid
-        val action = PlacesListFragmentDirections.actionPlacesFragmentToPlacesInfoFragment2(uid)
-        findNavController().navigate(action)
+//        val uid = (((binding.placesRecyclerView.adapter as EventListAdapter).data[position]) as DBPlaceDTO).uid
+//        val action = PlacesListFragmentDirections.actionPlacesFragmentToPlacesInfoFragment2(uid)
+//        findNavController().navigate(action)
     }
 
 

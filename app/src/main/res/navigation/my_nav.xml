@@ -26,6 +26,9 @@
         <action
             android:id="@+id/action_placesFragment_to_profileFragment2"
             app:destination="@+id/authFragment" />
+        <action
+            android:id="@+id/action_placesFragment_to_eventListFragment"
+            app:destination="@id/eventsFragment" />
     </fragment>
     <fragment
         android:id="@+id/mapFragment"
@@ -115,4 +118,8 @@
             android:name="jwtToken"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/eventsFragment"
+        android:name="com.mechwv.placeeventmap.presentation.events.EventListFragment"
+        android:label="EventListFragment" />
 </navigation>

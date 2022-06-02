@@ -12,19 +12,22 @@ data class DBEventDTO(
     @ColumnInfo(name = "event_name") override var  name: String,
     @ColumnInfo(name = "event_description") override var  description: String? = null,
     @ColumnInfo(name = "event_time") var eventStartTime: String,
-    @ColumnInfo(name = "location_id") override var  locationId : Int
+    @ColumnInfo(name = "location_id") override var  locationId : Int,
+    @ColumnInfo(name = "place_name") override var placeName: String,
 ): Event(
     uid,
     name,
     description,
     eventStartTime,
-    locationId
+    locationId,
+    placeName
 ) {
    constructor(event: Event) : this(
        event.id,
        event.name,
        event.description,
        event.startTime,
-       event.locationId
+       event.locationId,
+       event.placeName
     )
 }

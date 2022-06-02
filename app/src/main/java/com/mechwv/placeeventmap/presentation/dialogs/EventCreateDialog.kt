@@ -8,7 +8,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.CalendarContract
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,11 +18,8 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import com.mechwv.placeeventmap.R
 import com.mechwv.placeeventmap.databinding.EventCreateDialogBinding
-import com.mechwv.placeeventmap.databinding.PlaceCreateDialogBinding
 import com.mechwv.placeeventmap.domain.model.Event
-import com.mechwv.placeeventmap.domain.model.Place
 import com.mechwv.placeeventmap.presentation.events.CalendarHandler
-import com.mechwv.placeeventmap.presentation.room.dto.DBPlaceDTO
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -33,7 +29,7 @@ import java.util.*
 class EventCreateDialog : DialogFragment() {
     private lateinit var binding: EventCreateDialogBinding
     private val viewModel: EventCreateViewModel by viewModels()
-    var name: String = ""
+    var placeName: String = ""
     var placeUid = 0
     var temp: LocalDateTime? = null
     val calendar = Calendar.getInstance()
@@ -65,7 +61,7 @@ class EventCreateDialog : DialogFragment() {
         setStyle(STYLE_NORMAL, R.style.Theme_App_Dialog_FullScreen)
         if (arguments != null) {
             val mArgs = requireArguments()
-            name = mArgs.getString("name").toString()
+            placeName = mArgs.getString("name").toString()
             placeUid = mArgs.getInt("uid")
         }
     }
@@ -110,9 +106,10 @@ class EventCreateDialog : DialogFragment() {
             activityResultLauncher.launch(appPerms)
             viewModel.addEvent(Event(
                 name = binding.eventNameText.text.toString(),
-                description = binding.desc.text.toString(),
+                description = binding.descText.text.toString(),
                 startTime = temp?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")).toString(),
-                locationId = placeUid
+                locationId = placeUid,
+                placeName = placeName
             )).observe(viewLifecycleOwner) { eventId ->
                 viewModel.addEventToPlace(placeUid, eventId)
             }
@@ -157,7 +154,7 @@ class EventCreateDialog : DialogFragment() {
     ) {
         // 3.
 //        Log.d("FRAGMENT", "$longitude + $latitude")
-        binding.placeNameText.text = name
+        binding.placeNameText.text = placeName
 //        binding.longitudeText.setText(longitude.toString())
 
         requireDialog().window?.setWindowAnimations(
