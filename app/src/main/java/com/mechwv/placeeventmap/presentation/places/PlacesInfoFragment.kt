@@ -11,6 +11,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.mechwv.placeeventmap.databinding.FragmentPlacesInfoBinding
+import com.mechwv.placeeventmap.domain.model.Place
 import com.mechwv.placeeventmap.presentation.dialogs.EventCreateDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
@@ -63,6 +64,19 @@ class PlacesInfoFragment : Fragment() {
             findNavController().navigate(action)
         }
 
+        binding.update.setOnClickListener {
+            val uid = arguments?.get("place_id") as Int
+            val p = Place(
+                id = uid,
+                latitude = binding.placeLat.text.toString().toDouble(),
+                longitude = binding.placeLong.text.toString().toDouble(),
+                description = binding.descText.text.toString(),
+                name = binding.placeName.text.toString()
+            )
+            viewModel.updatePlace(p)
+            Toast.makeText(context, "Место успешно обновлено", Toast.LENGTH_SHORT).show()
+        }
+
         return binding.root
     }
 
@@ -92,6 +106,7 @@ class PlacesInfoFragment : Fragment() {
             binding.placeName.setText(place.name)
             binding.placeLat.setText(place.latitude.toString())
             binding.placeLong.setText(place.longitude.toString())
+            binding.descText.setText(place.description)
 
         }
     }

@@ -45,27 +45,32 @@ class EventCreateDialog : DialogFragment() {
                 allAreGranted = allAreGranted && b
             }
             if(allAreGranted) {
-                eventId = CalendarHandler.useCalendar(calendar,
-                    binding.eventNameText.text.toString(),
-                    "Адрес: ${binding.placeNameText.text}\nОписание: ${binding.descText.text}",
-                    address,
-                    requireContext())
-
-//                val intent = Intent(Intent.ACTION_INSERT)
-//                    .setData(CalendarContract.Events.CONTENT_URI)
-//                    .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, calendar.timeInMillis)
-//                    .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, calendar.timeInMillis + 60000*60)
-//                    .putExtra(CalendarContract.Events.TITLE, binding.eventNameText.text)
-//                    .putExtra(CalendarContract.Events.DESCRIPTION, binding.descText.text)
-//                    .putExtra(CalendarContract.Events.EVENT_LOCATION, binding.placeNameText.text)
-//                startActivity(intent)
+                if (temp != null) {
+                    eventId = CalendarHandler.useCalendar(
+                        calendar,
+                        binding.eventNameText.text.toString(),
+                        "Адрес: ${binding.placeNameText.text}\nОписание: ${binding.descText.text}",
+                        address,
+                        requireContext()
+                    )
 
 
-                Toast.makeText(
-                    context,
-                    eventId.toString(),
-                    Toast.LENGTH_SHORT
-                ).show()
+                    viewModel.addEvent(
+                        Event(
+                            name = binding.eventNameText.text.toString(),
+                            description = binding.descText.text.toString(),
+                            startTime = temp?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
+                                .toString(),
+                            locationId = placeUid,
+                            placeName = placeName,
+                            calendarEventId = eventId!!
+                        )
+                    ).observe(viewLifecycleOwner) { eventId ->
+                        viewModel.addEventToPlace(placeUid, eventId)
+                    }
+                } else {
+                    Toast.makeText(context, "Выберите время", Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
@@ -101,12 +106,16 @@ class EventCreateDialog : DialogFragment() {
                 calendar.set(Calendar.YEAR, year)
                 calendar.set(Calendar.MONTH, monthOfYear)
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                temp = LocalDateTime.ofInstant(calendar.toInstant(), calendar.timeZone.toZoneId())
+                binding.dateText.text = temp?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")).toString()
             }
 
         val timeSetListener =
             TimePickerDialog.OnTimeSetListener { timePicker, hour, minute ->
                 calendar.set(Calendar.HOUR_OF_DAY, hour)
                 calendar.set(Calendar.MINUTE, minute)
+                temp = LocalDateTime.ofInstant(calendar.toInstant(), calendar.timeZone.toZoneId())
+                binding.timeText.text = temp?.format(DateTimeFormatter.ofPattern("HH:mm")).toString()
             }
         binding.addButton.setOnClickListener {
             Toast.makeText(
@@ -119,16 +128,8 @@ class EventCreateDialog : DialogFragment() {
                 Manifest.permission.WRITE_CALENDAR,
             )
             activityResultLauncher.launch(appPerms)
-            viewModel.addEvent(Event(
-                name = binding.eventNameText.text.toString(),
-                description = binding.descText.text.toString(),
-                startTime = temp?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")).toString(),
-                locationId = placeUid,
-                placeName = placeName
-            )).observe(viewLifecycleOwner) { eventId ->
-                viewModel.addEventToPlace(placeUid, eventId)
-            }
 
+//            if (eventId != null) { }
 //            dismiss()
         }
         binding.pickTime.setOnClickListener {

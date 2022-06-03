@@ -23,7 +23,12 @@ constructor(
 
     override fun updateEvent(event: Event) {
         executorService.execute {
-            eventDao.update(DBEventDTO(event))
+            eventDao.updateEvent(
+                id = event.id,
+                desc = event.description.toString(),
+                name = event.name,
+                startTime = event.startTime
+            )
         }
     }
 

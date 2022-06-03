@@ -150,11 +150,24 @@
             android:minLines="1"
             android:maxLines="2" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/update"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Обновить информацию" />
+
     <Button
         android:id="@+id/pickTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Выбрать дату и время" />
+
+    <Button
+        android:id="@+id/watch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Посмотреть в календаре" />
 
     <Button
         android:id="@+id/toPlace"

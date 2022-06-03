@@ -21,6 +21,9 @@ abstract class EventDao : BaseDao<DBEventDTO> {
     @Query("SELECT * FROM events where uid = :id")
     abstract fun getOne(id: Long): LiveData<DBEventDTO>
 
+    @Query("update events set event_description = :desc, event_name = :name, event_time = :startTime where uid = :id")
+    abstract fun updateEvent(id: Long, desc: String, name: String, startTime: String)
+
     @Query("update events set location_id = :place_id, place_name = 'Место еще не назначено' where uid = :id")
     abstract fun updatePlaceEvent(id: Long, place_id: Int?)
 

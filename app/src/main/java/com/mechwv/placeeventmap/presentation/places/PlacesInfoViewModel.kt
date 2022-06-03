@@ -47,4 +47,9 @@ class PlacesInfoViewModel @Inject constructor(
     }
 
 
+    fun updatePlace(place: Place) {
+        placeRep.updatePlace(place)
+    }
+
+
 }

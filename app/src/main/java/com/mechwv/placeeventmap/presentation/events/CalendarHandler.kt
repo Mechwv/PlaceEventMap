@@ -1,17 +1,17 @@
 package com.mechwv.placeeventmap.presentation.events
 
+import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
-import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import android.provider.CalendarContract
-import androidx.core.content.ContextCompat.startActivity
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.util.*
+
 
 class CalendarHandler {
     companion object {
@@ -20,12 +20,12 @@ class CalendarHandler {
                         description: String = "",
                         address: String = "",
                         context: Context): Long? {
-            val datetime = ContentValues().apply {
+            val event = ContentValues().apply {
                 put(CalendarContract.Events.DTSTART, calendar.timeInMillis)
-                put(CalendarContract.Events.DTEND,calendar.timeInMillis + 60000*60)
+                put(CalendarContract.Events.DTEND, calendar.timeInMillis + 60000 * 60)
                 put(CalendarContract.Events.TITLE, title)
                 put(CalendarContract.Events.DESCRIPTION, description)
-                put(CalendarContract.Events.CALENDAR_ID, 1)
+                put(CalendarContract.Events.CALENDAR_ID, 3)
                 put(CalendarContract.Events.EVENT_LOCATION, address)
                 put(
                     CalendarContract.Events.EVENT_TIMEZONE,
@@ -37,13 +37,34 @@ class CalendarHandler {
                 val job = GlobalScope.launch {
                     val contentResolver = context.contentResolver
                     val uri: Uri? =
-                        contentResolver?.insert(CalendarContract.Events.CONTENT_URI, datetime)
+                        contentResolver?.insert(CalendarContract.Events.CONTENT_URI, event)
                     eventId = uri?.lastPathSegment?.toLong()
                 }
                 job.join()
             }
             return eventId
-    }
+        }
+
+        fun updateEvent(calendar: Calendar,
+                        title: String = "",
+                        description: String = "",
+                        eventID: Long,
+                        context: Context) {
+            val cr: ContentResolver = context.contentResolver
+            val eventUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID)
+            val event = ContentValues().apply {
+                put(CalendarContract.Events.DTSTART, calendar.timeInMillis)
+                put(CalendarContract.Events.TITLE, title)
+                put(CalendarContract.Events.DESCRIPTION, description)
+                put(CalendarContract.Events.CALENDAR_ID, 3)
+                put(
+                    CalendarContract.Events.EVENT_TIMEZONE,
+                    CalendarContract.CalendarCache.TIMEZONE_TYPE_AUTO
+                )
+            }
+            cr.update(eventUri, event, null, null)
+        }
+
         fun getEvent(eventID: Long, context: Context): String {
         val uri: Uri = CalendarContract.Calendars.CONTENT_URI
 //            val uri: Uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID)
