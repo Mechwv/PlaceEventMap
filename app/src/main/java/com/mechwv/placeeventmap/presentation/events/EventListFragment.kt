@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mechwv.placeeventmap.databinding.PlacesListFragmentBinding
 import com.mechwv.placeeventmap.domain.model.Place
 import com.mechwv.placeeventmap.presentation.places.PlacesListAdapter
+import com.mechwv.placeeventmap.presentation.room.dto.DBEventDTO
 import com.mechwv.placeeventmap.presentation.room.dto.DBPlaceDTO
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.random.Random
@@ -50,9 +51,9 @@ class EventListFragment : Fragment(), EventListAdapter.onItemClickListener {
     }
 
     override fun onItemClick(position: Int) {
-//        val uid = (((binding.placesRecyclerView.adapter as EventListAdapter).data[position]) as DBPlaceDTO).uid
-//        val action = PlacesListFragmentDirections.actionPlacesFragmentToPlacesInfoFragment2(uid)
-//        findNavController().navigate(action)
+        val uid = (((binding.placesRecyclerView.adapter as EventListAdapter).data[position]) as DBEventDTO).uid
+        val action = EventListFragmentDirections.actionEventsFragmentToEventsInfoFragment(uid)
+        findNavController().navigate(action)
     }
 
     fun updatePlacesInfo(filter: String = "") {

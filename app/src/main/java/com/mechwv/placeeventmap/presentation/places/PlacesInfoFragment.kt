@@ -71,7 +71,6 @@ class PlacesInfoFragment : Fragment() {
         dialog.show(childFragmentManager, "tag")
     }
 
-    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.getPlace(arguments?.get("place_id") as Int).observe(viewLifecycleOwner) { place ->

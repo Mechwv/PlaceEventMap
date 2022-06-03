@@ -38,6 +38,13 @@ constructor(
         return eventDao.getOne(id) as LiveData<Event>
     }
 
+    override fun updatePlaceEvent(id: Long, place_id: Int?) {
+        executorService.execute {
+            eventDao.updatePlaceEvent(id, place_id)
+        }
+    }
+
+
     override fun getEvents(): LiveData<List<Event>> {
         return events as LiveData<List<Event>>
     }

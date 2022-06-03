@@ -121,5 +121,25 @@
     <fragment
         android:id="@+id/eventsFragment"
         android:name="com.mechwv.placeeventmap.presentation.events.EventListFragment"
-        android:label="EventListFragment" />
+        android:label="EventListFragment" >
+        <action
+            android:id="@+id/action_eventsFragment_to_eventsInfoFragment"
+            app:destination="@id/eventsInfoFragment">
+            <argument
+                android:name="event_id"
+                app:argType="long"/>
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/eventsInfoFragment"
+        android:name="com.mechwv.placeeventmap.presentation.events.EventsInfoFragment"
+        android:label="EventsInfoFragment" >
+        <action
+            android:id="@+id/action_eventsInfoFragment_to_placesInfoFragment"
+            app:destination="@id/placesInfoFragment">
+            <argument
+                android:name="place_id"
+                app:argType="integer"/>
+        </action>
+    </fragment>
 </navigation>
