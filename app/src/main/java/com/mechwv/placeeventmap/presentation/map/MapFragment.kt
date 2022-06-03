@@ -58,9 +58,6 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
     private var myLocation: Point? = null
 
 
-    private var initialized: Boolean = false
-
-
     private lateinit var searchManager: SearchManager
     private lateinit var searchSession: Session
     private var suggestSession: SuggestSession? = null
@@ -141,18 +138,6 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
             }
         }
     }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putBoolean("IS_INITIALIZED", initialized)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initialized = savedInstanceState?.getBoolean("IS_INITIALIZED", false) == true
-        initialize(BuildConfig.YANDEX_KEY, requireContext())
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -161,16 +146,6 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
         supportFragmentManager = childFragmentManager
         init()
         return binding.root
-    }
-
-    fun initialize(apiKey: String, context: Context) {
-        if (initialized) {
-            return
-        }
-
-        MapKitFactory.setApiKey(apiKey)
-        MapKitFactory.initialize(context)
-        initialized = true
     }
 
     private fun init() {
