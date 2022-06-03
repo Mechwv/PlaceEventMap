@@ -1,6 +1,7 @@
 package com.mechwv.placeeventmap.presentation.map
 
 import android.Manifest
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -19,6 +20,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
+import com.mechwv.placeeventmap.BuildConfig
 import com.mechwv.placeeventmap.R
 import com.mechwv.placeeventmap.databinding.BottomSheetDialogLayoutBinding
 import com.mechwv.placeeventmap.databinding.MapFragmentBinding
@@ -54,6 +56,10 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
     private var locationManager: LocationManager? = null
     private var mapObjects: MapObjectCollection? = null
     private var myLocation: Point? = null
+
+
+    private var initialized: Boolean = false
+
 
     private lateinit var searchManager: SearchManager
     private lateinit var searchSession: Session
@@ -136,6 +142,17 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean("IS_INITIALIZED", initialized)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initialized = savedInstanceState?.getBoolean("IS_INITIALIZED", false) == true
+        initialize(BuildConfig.YANDEX_KEY, requireContext())
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -145,6 +162,17 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
         init()
         return binding.root
     }
+
+    fun initialize(apiKey: String, context: Context) {
+        if (initialized) {
+            return
+        }
+
+        MapKitFactory.setApiKey(apiKey)
+        MapKitFactory.initialize(context)
+        initialized = true
+    }
+
     private fun init() {
         MapKitFactory.initialize(context)
         SearchFactory.initialize(context)
