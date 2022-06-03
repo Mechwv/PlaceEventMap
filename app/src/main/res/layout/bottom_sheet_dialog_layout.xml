@@ -143,6 +143,7 @@
                 android:gravity="center"
                 android:minHeight="70dp"
                 android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/normalMargin"
                 android:text="Событий еще не назначено"
                 android:textSize="18sp"
                 android:fontFamily="sans-serif-condensed"
