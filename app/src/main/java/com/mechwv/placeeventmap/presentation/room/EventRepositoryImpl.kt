@@ -27,7 +27,7 @@ constructor(
                 id = event.id,
                 desc = event.description.toString(),
                 name = event.name,
-                startTime = event.startTime
+                startTime = event.eventStartTime
             )
         }
     }

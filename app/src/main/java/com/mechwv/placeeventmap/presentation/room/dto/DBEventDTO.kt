@@ -11,7 +11,7 @@ data class DBEventDTO(
     var uid: Long,
     @ColumnInfo(name = "event_name") override var  name: String,
     @ColumnInfo(name = "event_description") override var  description: String? = null,
-    @ColumnInfo(name = "event_time") var eventStartTime: String,
+    @ColumnInfo(name = "event_time") override var eventStartTime: String,
     @ColumnInfo(name = "location_id") override var  locationId : Int?,
     @ColumnInfo(name = "place_name") override var placeName: String,
     @ColumnInfo(name = "calendar_event_id") override var calendarEventId: Long,
@@ -28,7 +28,7 @@ data class DBEventDTO(
        event.id,
        event.name,
        event.description,
-       event.startTime,
+       event.eventStartTime,
        event.locationId,
        event.placeName,
        event.calendarEventId

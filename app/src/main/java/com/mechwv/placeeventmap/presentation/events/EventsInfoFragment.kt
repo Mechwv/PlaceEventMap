@@ -22,6 +22,8 @@ import com.mechwv.placeeventmap.databinding.EventInfoFragmentBinding
 import com.mechwv.placeeventmap.domain.model.Event
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -64,6 +66,7 @@ class EventsInfoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = EventInfoFragmentBinding.inflate(layoutInflater, container, false)
+        updateEvent()
 
         binding.toPlace.setOnClickListener {
             Log.d("PLACEID", placeId.toString())
@@ -97,7 +100,6 @@ class EventsInfoFragment : Fragment() {
             }
 
         binding.pickTime.setOnClickListener {
-
             TimePickerDialog(requireContext(), timeSetListener,
                 calendar.get(Calendar.HOUR_OF_DAY),
                 calendar.get(Calendar.MINUTE), true).show()
@@ -119,47 +121,48 @@ class EventsInfoFragment : Fragment() {
 
         binding.update.setOnClickListener {
             val uid = arguments?.get("event_id") as Long
+            val time = "${binding.dateText.text} ${binding.timeText.text}"
+            val e = Event(
+                id = uid,
+                description = binding.descText.text.toString(),
+                name = binding.eventNameText.text.toString(),
+                eventStartTime = time
+            )
+            viewModel.updateEvent(e)
+            updEvent = e
+
             val fullFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-            if (temp != null) {
-                val e = Event(
-                    id = uid,
-                    description = binding.descText.text.toString(),
-                    name = binding.eventNameText.text.toString(),
-                    startTime = temp!!.format(fullFormat),
-                )
-                viewModel.updateEvent(e)
-                updEvent = e
+            temp = LocalDateTime.parse(time, fullFormat)
+            val zdt: ZonedDateTime = ZonedDateTime.of(temp, ZoneId.systemDefault())
+            calendar.timeInMillis = zdt.toInstant().toEpochMilli()
 
-                val appPerms = arrayOf(
-                    Manifest.permission.READ_CALENDAR,
-                    Manifest.permission.WRITE_CALENDAR,
-                )
-                activityResultLauncher.launch(appPerms)
-                Toast.makeText(context, "Событие успешно обновлено", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(context, "Выберите время", Toast.LENGTH_SHORT).show()
-            }
+            val appPerms = arrayOf(
+                Manifest.permission.READ_CALENDAR,
+                Manifest.permission.WRITE_CALENDAR,
+            )
+            activityResultLauncher.launch(appPerms)
+            Toast.makeText(context, "Событие успешно обновлено", Toast.LENGTH_SHORT).show()
+
         }
-
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private fun updateEvent() {
         viewModel.getEvent(arguments?.get("event_id") as Long).observe(viewLifecycleOwner) { event ->
+            val time = event.eventStartTime
             binding.placeNameText.text = event.placeName
             binding.eventNameText.setText(event.name)
             val fullFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-            val tmp = LocalDateTime.parse(event.startTime, fullFormat)
+            val tmp = LocalDateTime.parse(time, fullFormat)
             binding.dateText.text = tmp.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")).toString()
             binding.timeText.text = tmp.format(DateTimeFormatter.ofPattern("HH:mm")).toString()
             binding.eventNameText.setText(event.name)
             binding.descText.setText(event.description)
             placeId = event.locationId
             eventId = event.calendarEventId
-            temp = tmp
         }
     }
+
 
     private fun goToCalendarIntent(eventID: Long){
         val uri: Uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID)

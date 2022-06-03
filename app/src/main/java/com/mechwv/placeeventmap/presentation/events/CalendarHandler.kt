@@ -54,6 +54,7 @@ class CalendarHandler {
             val eventUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID)
             val event = ContentValues().apply {
                 put(CalendarContract.Events.DTSTART, calendar.timeInMillis)
+                put(CalendarContract.Events.DTEND, calendar.timeInMillis + 60000 * 60)
                 put(CalendarContract.Events.TITLE, title)
                 put(CalendarContract.Events.DESCRIPTION, description)
                 put(CalendarContract.Events.CALENDAR_ID, 3)

@@ -14,7 +14,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import com.mechwv.placeeventmap.R
@@ -59,7 +58,7 @@ class EventCreateDialog : DialogFragment() {
                         Event(
                             name = binding.eventNameText.text.toString(),
                             description = binding.descText.text.toString(),
-                            startTime = temp?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
+                            eventStartTime = temp?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
                                 .toString(),
                             locationId = placeUid,
                             placeName = placeName,
