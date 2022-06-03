@@ -4,12 +4,9 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.mechwv.placeeventmap.domain.model.Event
 import com.mechwv.placeeventmap.domain.model.Place
-import com.mechwv.placeeventmap.presentation.retrofit.model.geoApi.GeoPlace
 import com.mechwv.placeeventmap.presentation.room.EventRepositoryImpl
 import com.mechwv.placeeventmap.presentation.room.PlaceRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,10 +27,15 @@ class EventListViewModel @Inject constructor(
         }
     }
 
-    fun getDBEvents(): LiveData<List<Event>> {
-        val a = eventRep.getEvents()
-        Log.e("Repository: ", a.value.toString())
-        return a
+    fun getDBEvents(filter: String): LiveData<List<Event>> {
+        val allPlaces = eventRep.getEvents()
+        val fe = Transformations.switchMap(allPlaces) { eventList ->
+            val filteredEvents = MutableLiveData<List<Event>>()
+            val filteredList = eventList.filter { e-> e.name.contains(filter, ignoreCase = true) }
+            filteredEvents.value = filteredList
+            filteredEvents
+        }
+        return fe
     }
 
     fun addEventToPlace(placeId: Int, eventId: Long) {

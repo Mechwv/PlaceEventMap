@@ -56,7 +56,7 @@ class PlacesListFragment : Fragment(), PlacesListAdapter.onItemClickListener {
                 String.format("%.7f",Random.nextDouble(-90.0, 90.0)).replace(",", ".").toDouble(),
                 String.format("%.7f",Random.nextDouble(-180.0, 180.0)).replace(",", ".").toDouble(),
                 "CringePlace + ${Random.nextInt(1000)}",
-                "I have bouht + ${Random.nextInt(1000)} bottles of pepsi there",
+                "I have bought + ${Random.nextInt(1000)} bottles of pepsi there",
             null))
         }
 
