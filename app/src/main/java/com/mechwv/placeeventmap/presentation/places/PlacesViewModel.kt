@@ -16,10 +16,16 @@ class PlacesViewModel @Inject constructor(
 //    val places: LiveData<List<Place>>
 //        get() = _places
 
-    fun getDBPlaces(): LiveData<List<Place>> {
-        val a = repository.getPlaces()
-        Log.e("Repository: ", a.value.toString())
-        return a
+    fun getDBPlaces(filter: String = "cringe"): LiveData<List<Place>> {
+        val allPlaces = repository.getPlaces()
+        val fp = Transformations.switchMap(allPlaces) { placeList ->
+            val filteredPlaces = MutableLiveData<List<Place>>()
+            val filteredList = placeList.filter { p-> p.name.contains(filter, ignoreCase = true) }
+            filteredPlaces.value = filteredList
+            filteredPlaces
+        }
+        return fp
+//        return a
     }
 
     fun addPlace(place: Place) {

@@ -60,15 +60,17 @@ class PlacesListFragment : Fragment(), PlacesListAdapter.onItemClickListener {
             null))
         }
 
+        val searchEdit = binding.searchContainer
+        searchEdit.setEndIconOnClickListener {
+            updatePlacesInfo(binding.searchText.text.toString())
+        }
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getDBPlaces().observe(viewLifecycleOwner) {
-            binding.placesRecyclerView.adapter = PlacesListAdapter(it!!, this)
-        }
-
+        updatePlacesInfo()
     }
 
     override fun onItemClick(position: Int) {
@@ -77,5 +79,10 @@ class PlacesListFragment : Fragment(), PlacesListAdapter.onItemClickListener {
         findNavController().navigate(action)
     }
 
+    fun updatePlacesInfo(filter: String = "") {
+        viewModel.getDBPlaces(filter).observe(viewLifecycleOwner) {
+            binding.placesRecyclerView.adapter = PlacesListAdapter(it!!, this)
+        }
+    }
 
 }
