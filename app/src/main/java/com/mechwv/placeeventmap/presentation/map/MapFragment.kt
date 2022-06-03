@@ -319,13 +319,16 @@ class MapFragment : SuggestSession.SuggestListener, Session.SearchListener, Frag
                 if (userData is Place) {
                     val place : Place = userData
                     mBottomSheetLayoutBinding.place = place
-                    val toast = Toast.makeText(
-                        context,
-                        "Place: " + place.name + " description '"
-                                + place.description + "' tapped",
-                        Toast.LENGTH_SHORT
-                    )
-                    toast.show()
+                    viewModel.getEventName(place).observe(viewLifecycleOwner) {
+                        mBottomSheetLayoutBinding.eventNameText.text = it
+                    }
+//                    val toast = Toast.makeText(
+//                        context,
+//                        "Place: " + place.name + " description '"
+//                                + place.description + "' tapped",
+//                        Toast.LENGTH_SHORT
+//                    )
+//                    toast.show()
                 }
             }
             true

@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <TextView
-                android:id="@+id/event_name"
+                android:id="@+id/place_name"
                 android:layout_height="48dp"
                 android:text="Название"
                 android:layout_marginEnd="@dimen/normalMargin"
@@ -88,7 +88,7 @@
                 android:layout_width="match_parent" />
 
             <TextView
-                android:id="@+id/place_name"
+                android:id="@+id/event_name"
                 android:layout_height="70dp"
                 android:text="Активное \nсобытие"
                 android:layout_marginEnd="@dimen/normalMargin"
@@ -138,12 +138,12 @@
                 android:fontFamily="sans-serif-condensed"
                 android:textStyle="bold" />
             <TextView
-                android:id="@+id/place_name_text"
+                android:id="@+id/event_name_text"
                 android:layout_width="match_parent"
                 android:gravity="center"
                 android:minHeight="70dp"
                 android:layout_height="wrap_content"
-                android:text="Сбор металлолома"
+                android:text="Событий еще не назначено"
                 android:textSize="18sp"
                 android:fontFamily="sans-serif-condensed"
                 android:textStyle="bold" />
