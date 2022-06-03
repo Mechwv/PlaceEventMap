@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.mechwv.placeeventmap.databinding.EventListFragmentBinding
 import com.mechwv.placeeventmap.databinding.PlacesListFragmentBinding
 import com.mechwv.placeeventmap.domain.model.Place
 import com.mechwv.placeeventmap.presentation.places.PlacesListAdapter
@@ -21,7 +22,7 @@ import kotlin.random.Random
 @AndroidEntryPoint
 class EventListFragment : Fragment(), EventListAdapter.onItemClickListener {
 
-    private lateinit var binding: PlacesListFragmentBinding
+    private lateinit var binding: EventListFragmentBinding
 
     companion object {
         fun newInstance() = EventListFragment()
@@ -33,14 +34,28 @@ class EventListFragment : Fragment(), EventListAdapter.onItemClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = PlacesListFragmentBinding.inflate(layoutInflater, container, false)
+        binding = EventListFragmentBinding.inflate(layoutInflater, container, false)
 
-        binding.placesRecyclerView.layoutManager = LinearLayoutManager(context)
+        binding.eventsRecyclerView.layoutManager = LinearLayoutManager(context)
 
         val searchEdit = binding.searchContainer
         searchEdit.setEndIconOnClickListener {
             updatePlacesInfo(binding.searchText.text.toString())
         }
+
+        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                viewModel.deleteEvent(
+                    (binding.eventsRecyclerView.adapter as EventListAdapter).data[position]
+                )
+            }
+        }).attachToRecyclerView(binding.eventsRecyclerView)
 
         return binding.root
     }
@@ -51,14 +66,14 @@ class EventListFragment : Fragment(), EventListAdapter.onItemClickListener {
     }
 
     override fun onItemClick(position: Int) {
-        val uid = (((binding.placesRecyclerView.adapter as EventListAdapter).data[position]) as DBEventDTO).uid
+        val uid = (((binding.eventsRecyclerView.adapter as EventListAdapter).data[position]) as DBEventDTO).uid
         val action = EventListFragmentDirections.actionEventsFragmentToEventsInfoFragment(uid)
         findNavController().navigate(action)
     }
 
     fun updatePlacesInfo(filter: String = "") {
         viewModel.getDBEvents(filter).observe(viewLifecycleOwner) {
-            binding.placesRecyclerView.adapter = EventListAdapter(it!!, this)
+            binding.eventsRecyclerView.adapter = EventListAdapter(it!!, this)
         }
     }
 

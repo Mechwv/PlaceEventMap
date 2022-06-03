@@ -38,6 +38,11 @@ class EventListViewModel @Inject constructor(
         return fe
     }
 
+    fun deleteEvent(event: Event) {
+        eventRep.deleteEvent(event)
+        event.locationId?.let { placeRep.updatePlaceEvent(it, null) }
+    }
+
     fun addEventToPlace(placeId: Int, eventId: Long) {
         placeRep.updatePlaceEvent(placeId, eventId)
     }

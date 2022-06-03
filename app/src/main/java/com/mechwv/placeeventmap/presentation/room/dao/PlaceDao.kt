@@ -13,7 +13,7 @@ abstract class  PlaceDao : BaseDao<DBPlaceDTO> {
     abstract fun getOne(id: Int): LiveData<DBPlaceDTO>
 
     @Query("update places set event_id = :event_id where uid = :id")
-    abstract fun updatePlaceEvent(id: Int, event_id: Long)
+    abstract fun updatePlaceEvent(id: Int, event_id: Long?)
 
     @Query("update places set location_name = :name where uid = :id")
     abstract fun updatePlaceName(id: Int, name: String)

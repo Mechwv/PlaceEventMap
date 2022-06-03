@@ -51,7 +51,7 @@ constructor(
         return GeoPlace()
     }
 
-    override fun updatePlaceEvent(id: Int, event_id: Long) {
+    override fun updatePlaceEvent(id: Int, event_id: Long?) {
         executorService.execute {
             placeDao.updatePlaceEvent(id, event_id)
         }
