@@ -23,5 +23,9 @@ class EventsViewModel @Inject constructor(
         return event
     }
 
+    fun updateEvent(event: Event) {
+        eventRep.updateEvent(event)
+    }
+
 
 }

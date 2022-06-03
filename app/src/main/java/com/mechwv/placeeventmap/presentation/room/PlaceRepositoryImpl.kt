@@ -5,9 +5,11 @@ import androidx.lifecycle.LiveData
 import com.mechwv.placeeventmap.presentation.room.dto.DBPlaceDTO
 import com.mechwv.placeeventmap.presentation.room.dao.PlaceDao
 import com.mechwv.placeeventmap.data.repository.PlaceRepository
+import com.mechwv.placeeventmap.domain.model.Event
 import com.mechwv.placeeventmap.domain.model.Place
 import com.mechwv.placeeventmap.presentation.retrofit.Common
 import com.mechwv.placeeventmap.presentation.retrofit.model.geoApi.GeoPlace
+import com.mechwv.placeeventmap.presentation.room.dto.DBEventDTO
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import okhttp3.Address
 import java.lang.Exception
@@ -85,5 +87,11 @@ constructor(
 
     override fun getPlaces(): LiveData<List<Place>> {
         return places as LiveData<List<Place>>
+    }
+
+    override fun updatePlace(place: Place) {
+        executorService.execute {
+            placeDao.update(DBPlaceDTO(place))
+        }
     }
 }

@@ -12,4 +12,5 @@ interface EventRepository {
     fun getEvents(): LiveData<List<Event>>
     fun deleteEvent(event: Event)
     fun updatePlaceEvent(id: Long, place_id: Int?)
+    fun updateEvent(event: Event)
 }

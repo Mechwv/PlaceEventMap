@@ -18,4 +18,5 @@ interface PlaceRepository {
     fun deletePlaces(place: List<Place>)
     @ExperimentalCoroutinesApi
     suspend fun getAddressByString(address: String): GeoPlace
+    fun updatePlace(place: Place)
 }

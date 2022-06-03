@@ -16,7 +16,15 @@ constructor(
     private var events: LiveData<List<DBEventDTO>> = eventDao.getAll()
 
     override fun addEvent(event: Event) {
-        eventDao.insert(DBEventDTO(event))
+        executorService.execute {
+            eventDao.insert(DBEventDTO(event))
+        }
+    }
+
+    override fun updateEvent(event: Event) {
+        executorService.execute {
+            eventDao.update(DBEventDTO(event))
+        }
     }
 
     override fun addEventWithReturn(event: Event): Long {
