@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     android:background="#FFFFFF">
 
     <ScrollView
@@ -71,17 +72,45 @@
                 android:autofillHints="@string/enter_party_name"
                 android:inputType="text" />
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/desc"
+                    android:layout_height="96dp"
+                    android:text="Описание"
+                    android:gravity="center"
+                    android:layout_marginEnd="@dimen/normalMargin"
+                    android:padding="10dp"
+                    android:textSize="18sp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:textStyle="bold"
+                    android:layout_width="wrap_content" />
+
+                <EditText
+                    android:id="@+id/desc_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="20"
+                    android:gravity="top|start"
+                    android:hint="прогулка в Поселке Шедоуфиндов"
+                    android:inputType="textMultiLine"
+                    android:minLines="1"
+                    android:maxLines="2" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/update"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Обновить информацию" />
+
             <Button
                 android:id="@+id/watch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Посмотреть события" />
-
-            <Button
-                android:id="@+id/add_event"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Добавить событие" />
+                android:text="Посмотреть событие" />
 
             <Button
                 android:id="@+id/share"

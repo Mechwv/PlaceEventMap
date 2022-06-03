@@ -70,6 +70,13 @@
                 android:name="place_id"
                 app:argType="integer"/>
         </action>
+        <action
+            android:id="@+id/action_placesInfoFragment_to_eventsInfoFragment"
+            app:destination="@id/eventsInfoFragment">
+            <argument
+                android:name="event_id"
+                app:argType="long"/>
+        </action>
     </fragment>
     <fragment
         android:id="@+id/authFragment"
@@ -83,7 +90,8 @@
         <deepLink app:uri="app://placeevent.map/profile" />
         <action
             android:id="@+id/action_authFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
+            app:destination="@id/profileFragment" >
+        </action>
     </fragment>
     <fragment
         android:id="@+id/webFragment"

@@ -27,18 +27,19 @@ class PlacesInfoFragment : Fragment() {
     ): View? {
         binding = FragmentPlacesInfoBinding.inflate(layoutInflater, container, false)
 
-        binding.addEvent.setOnClickListener {
+        binding.watch.setOnClickListener {
             val uid = arguments?.get("place_id") as Int
 //            val action = PlacesInfoFragmentDirections.actionPlacesInfoFragment2ToEventAddFragment(uid)
 //            findNavController().navigate(action)
-            showDialog(binding.placeName.text.toString(), uid, binding.address.text.toString())
-        }
-
-        binding.watch.setOnClickListener {
-            viewModel.place.observe(viewLifecycleOwner) {
-//                Log.d("PLACE", it.event_id.toString())
-                viewModel.getEvent(it.event_id!!).observe(viewLifecycleOwner) { e ->
-                    Toast.makeText(context, e.name, Toast.LENGTH_SHORT).show()
+            viewModel.getPlace(uid).observe(viewLifecycleOwner) { place ->
+                if (place.event_id == null)
+                    showDialog(
+                        binding.placeName.text.toString(),
+                        uid,
+                        binding.address.text.toString()
+                    )
+                else {
+                    goToEvent(place.event_id!!)
                 }
             }
         }
@@ -69,6 +70,11 @@ class PlacesInfoFragment : Fragment() {
         val dialog = EventCreateDialog()
         dialog.arguments = bundleOf("name" to name, "uid" to uid, "address" to address)
         dialog.show(childFragmentManager, "tag")
+    }
+
+    fun goToEvent(eventId: Long) {
+        val action = PlacesInfoFragmentDirections.actionPlacesInfoFragmentToEventsInfoFragment(eventId)
+        findNavController().navigate(action)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
