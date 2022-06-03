@@ -22,6 +22,8 @@ class PlacesInfoFragment : Fragment() {
     private lateinit var binding: FragmentPlacesInfoBinding
     private val viewModel: PlacesInfoViewModel by viewModels()
 
+    private var eventId: Long? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -66,15 +68,18 @@ class PlacesInfoFragment : Fragment() {
 
         binding.update.setOnClickListener {
             val uid = arguments?.get("place_id") as Int
-            val p = Place(
-                id = uid,
-                latitude = binding.placeLat.text.toString().toDouble(),
-                longitude = binding.placeLong.text.toString().toDouble(),
-                description = binding.descText.text.toString(),
-                name = binding.placeName.text.toString()
-            )
-            viewModel.updatePlace(p)
-            Toast.makeText(context, "Место успешно обновлено", Toast.LENGTH_SHORT).show()
+            if (eventId != null) {
+                val p = Place(
+                    id = uid,
+                    latitude = binding.placeLat.text.toString().toDouble(),
+                    longitude = binding.placeLong.text.toString().toDouble(),
+                    description = binding.descText.text.toString(),
+                    name = binding.placeName.text.toString(),
+                    event_id = eventId
+                    )
+                viewModel.updatePlace(p)
+                Toast.makeText(context, "Место успешно обновлено", Toast.LENGTH_SHORT).show()
+            }
         }
 
         return binding.root
@@ -107,7 +112,7 @@ class PlacesInfoFragment : Fragment() {
             binding.placeLat.setText(place.latitude.toString())
             binding.placeLong.setText(place.longitude.toString())
             binding.descText.setText(place.description)
-
+            eventId = place.event_id
         }
     }
 }
