@@ -65,6 +65,13 @@ class CalendarHandler {
             cr.update(eventUri, event, null, null)
         }
 
+        fun deleteEvent(eventID: Long,
+                        context: Context) {
+            val cr: ContentResolver = context.contentResolver
+            val eventUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID)
+            cr.delete(eventUri, null, null)
+        }
+
         fun getEvent(eventID: Long, context: Context): String {
         val uri: Uri = CalendarContract.Calendars.CONTENT_URI
 //            val uri: Uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID)

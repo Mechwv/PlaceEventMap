@@ -1,10 +1,13 @@
 package com.mechwv.placeeventmap.presentation.events
 
+import android.Manifest
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -24,11 +27,26 @@ class EventListFragment : Fragment(), EventListAdapter.onItemClickListener {
 
     private lateinit var binding: EventListFragmentBinding
 
+    private var eventId: Long? = null
+
+
     companion object {
         fun newInstance() = EventListFragment()
     }
 
     private val viewModel: EventListViewModel by viewModels()
+
+    private var activityResultLauncher: ActivityResultLauncher<Array<String>> =
+        registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()) { result ->
+            var allAreGranted = true
+            for(b in result.values) {
+                allAreGranted = allAreGranted && b
+            }
+            if(allAreGranted) {
+                eventId?.let { CalendarHandler.deleteEvent(it, requireContext()) }
+            }
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,9 +69,15 @@ class EventListFragment : Fragment(), EventListAdapter.onItemClickListener {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
-                viewModel.deleteEvent(
-                    (binding.eventsRecyclerView.adapter as EventListAdapter).data[position]
+                val evt = (binding.eventsRecyclerView.adapter as EventListAdapter).data[position]
+                viewModel.deleteEvent(evt)
+                eventId = evt.calendarEventId
+                val appPerms = arrayOf(
+                    Manifest.permission.READ_CALENDAR,
+                    Manifest.permission.WRITE_CALENDAR,
                 )
+                activityResultLauncher.launch(appPerms)
+
             }
         }).attachToRecyclerView(binding.eventsRecyclerView)
 
