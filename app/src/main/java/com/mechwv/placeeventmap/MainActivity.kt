@@ -7,8 +7,10 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.yandex.authsdk.YandexAuthSdk
 import com.yandex.mapkit.MapKitFactory
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -21,8 +23,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         initialized = savedInstanceState?.getBoolean("IS_INITIALIZED", false) == true
-
         initialize(BuildConfig.YANDEX_KEY, this)
+
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         val navController = navHostFragment.navController

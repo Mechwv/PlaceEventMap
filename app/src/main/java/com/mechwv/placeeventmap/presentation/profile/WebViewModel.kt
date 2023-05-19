@@ -15,7 +15,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
-import kotlin.concurrent.thread
 
 @HiltViewModel
 class WebViewModel @Inject constructor(
@@ -24,49 +23,38 @@ class WebViewModel @Inject constructor(
 ): ViewModel() {
     private val commonService = Common
 
-    fun getProfile(url: String, login: String = ""): LiveData<ProfileInfo?> {
-
-        val accessCodeFragment = "access_token="
-        if (url.contains(accessCodeFragment)) {
-            Log.e("Result string", url)
-            val accessCode = url.substring(url.indexOf(accessCodeFragment) + accessCodeFragment.length).substringBefore("&")
-            Log.e("Access Token", accessCode)
-
-            var jwtToken: String? = ""
-            try {
-                runBlocking {
-                    val job = GlobalScope.launch {
-                        val res = commonService.authorizeOnServer(
-                            accessCode,
-                            Role.MODERATOR.role
-                        )
-                        if (res.isSuccessful) {
-                            jwtToken = res.body()!!.jwtString
-                        }
+    fun getProfile(token: String, login: String = ""): LiveData<ProfileInfo?> {
+        Log.e("YA_AUTH_TOKEN", token)
+        var jwtToken: String? = ""
+        try {
+            runBlocking {
+                val job = GlobalScope.launch {
+                    val res = commonService.authorizeOnServer(
+                        token,
+                        Role.MODERATOR.role
+                    )
+                    if (res.isSuccessful) {
+                        jwtToken = res.body()!!.jwtString
                     }
-                    job.join()
                 }
-                Log.e("JWT", jwtToken.toString())
-            } catch (e: Exception) {
-                Log.e("JWT ERROR", e.message.toString())
+                job.join()
             }
-
-            return liveData {
-                try {
-                    val profile = commonService.getProfile(jwtToken.toString())
-                    repository.setProfile(profile)
-                    val user = DBUserDTO(0, profile.default_email!!, "", Role.MODERATOR.toString(), jwtToken)
-                    repository.setOauthUser(user)
-                    repository.setCurrentUser(user)
-                    emit(profile)
-                } catch (e: Exception) {
-                    Log.e("SET PROFILE ERROR", e.message.toString())
-                }
-            }
-
+            Log.e("JWT", jwtToken.toString())
+        } catch (e: Exception) {
+            Log.e("JWT ERROR", e.message.toString())
         }
+
         return liveData {
-            emit(null)
+            try {
+                val profile = commonService.getProfile(jwtToken.toString())
+                repository.setProfile(profile)
+                val user = DBUserDTO(0, profile.default_email!!, "", Role.MODERATOR.toString(), token)
+                repository.setOauthUser(user)
+                repository.setCurrentUser(user)
+                emit(profile)
+            } catch (e: Exception) {
+                Log.e("SET PROFILE ERROR", e.message.toString())
+            }
         }
     }
 }

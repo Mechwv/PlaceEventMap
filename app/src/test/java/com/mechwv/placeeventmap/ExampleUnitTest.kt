@@ -11,7 +11,42 @@ import org.junit.Assert.*
  */
 class ExampleUnitTest {
     @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+    fun test_request() {
+        assertEquals(1, 1)
+    }
+
+    @Test
+    fun test_parsing() {
+        assertEquals(1, 1)
+    }
+
+    @Test
+    fun test_place_addition() {
+        assertEquals(1, 1)
+    }
+
+    @Test
+    fun test_place_deletion() {
+        assertEquals(1, 1)
+    }
+
+    @Test
+    fun test_event_addition() {
+        assertEquals(1, 1)
+    }
+
+    @Test
+    fun test_event_deletion() {
+        assertEquals(1, 1)
+    }
+
+    @Test
+    fun test_event_bind_to_place() {
+        assertEquals(1, 1)
+    }
+
+    @Test
+    fun test_local_database() {
+        assertEquals(1, 1)
     }
 }

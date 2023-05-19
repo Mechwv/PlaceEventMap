@@ -26,6 +26,8 @@ android {
         versionCode 1
         versionName "1.0"
 
+        manifestPlaceholders = [YANDEX_CLIENT_ID:"ef169e8be44e407fbf8694847d8462c3"]
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -73,6 +75,7 @@ dependencies {
     // LocationManager, UserLocationLayer и возможность скачивать оффлайн карты (только в платной версии).
 //    implementation 'com.yandex.android:maps.mobile:4.0.0-lite'
     implementation 'com.yandex.android:maps.mobile:4.0.0-full'
+    implementation "com.yandex.android:authsdk:2.3.1"
 
     // material design
     implementation 'com.google.android.material:material:1.6.0'
