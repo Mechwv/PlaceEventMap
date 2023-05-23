@@ -1,5 +1,7 @@
 package com.mechwv.placeeventmap.presentation.profile
 
+import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -52,25 +54,52 @@ class ProfileFragment : Fragment() {
         }
 
         binding.upload.setOnClickListener {
-            viewModel.getCurrentUser().observe(viewLifecycleOwner) { user ->
-                viewModel.getDBPlaces().observe(viewLifecycleOwner) { places ->
-                    viewModel.saveCurrentPlaces(jwt_token = user?.jwtToken!!, places = places).observe(viewLifecycleOwner) {
-                        println("ONLINE SAVE RESULT $it")
+            showCloudDataConfirmationDialog(
+                text = "Сохранение данных в облако удалит информацию сохраненную в облаке, вы уверены?",
+                context = requireContext(),
+                action = {
+                    viewModel.getCurrentUser().observe(viewLifecycleOwner) { user ->
+                        viewModel.getDBPlaces().observe(viewLifecycleOwner) { places ->
+                            viewModel.saveCurrentPlaces(jwt_token = user?.jwtToken!!, places = places).observe(viewLifecycleOwner) {
+                                println("ONLINE SAVE RESULT $it")
+                            }
+                        }
                     }
                 }
-            }
+            )
         }
 
         binding.download.setOnClickListener {
-            viewModel.getCurrentUser().observe(viewLifecycleOwner) { user ->
-                viewModel.getOnlinePlaces(jwt_token = user?.jwtToken!!).observe(viewLifecycleOwner) {
-                    println("ONLINE GOT RESULT $it")
+            showCloudDataConfirmationDialog(
+                text = "Загрузка данных из облака удалит информацию сохраненную локально, вы уверены?",
+                context = requireContext(),
+                action = {
+                    viewModel.getCurrentUser().observe(viewLifecycleOwner) { user ->
+                        viewModel.getOnlinePlaces(jwt_token = user?.jwtToken!!).observe(viewLifecycleOwner) {
+                            println("ONLINE GOT RESULT $it")
+                        }
+                    }
                 }
-            }
+            )
         }
 
 
         return binding.root
+    }
+
+    private fun showCloudDataConfirmationDialog(text: String, context: Context, action: () -> Unit) {
+        val dialogBuilder = AlertDialog.Builder(context)
+            .setMessage(text)
+            .setPositiveButton("Сохранить") { dialog, _ ->
+                action()
+                dialog.dismiss()
+            }
+            .setNegativeButton("Отмена") { dialog, _ ->
+                dialog.dismiss()
+            }
+
+        val dialog = dialogBuilder.create()
+        dialog.show()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

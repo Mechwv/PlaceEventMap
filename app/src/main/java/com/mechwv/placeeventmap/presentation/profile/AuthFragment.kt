@@ -28,13 +28,13 @@ class AuthFragment : Fragment() {
     ): View? {
         binding = AuthFragmentBinding.inflate(layoutInflater, container, false)
 //        viewModel.setAdmin()
-        viewModel.getProfile().observe(viewLifecycleOwner, { profile ->
+        viewModel.getProfile().observe(viewLifecycleOwner) { profile ->
             if (profile?.client_id != null) {
                 val action = AuthFragmentDirections.actionAuthFragmentToProfileFragment()
                 findNavController().navigate(action)
             }
-        })
-        viewModel.getOauthUser().observe(viewLifecycleOwner, { user ->
+        }
+        viewModel.getOauthUser().observe(viewLifecycleOwner) { user ->
             if (user != null) {
                 Log.e("USER TOKEN", user.jwtToken.toString())
                 viewModel.setCurrentUser(user)
@@ -42,20 +42,20 @@ class AuthFragment : Fragment() {
 
                     GlobalScope.launch(Dispatchers.Main) {
                         delay(2000L)
-                        if (viewModel.getProfile().value == null) {
-                            Toast.makeText(context, "PLZ ENABLE INTERNET", Toast.LENGTH_LONG).show()
-                        }
+//                        if (viewModel.getProfile().value == null) {
+//                            Toast.makeText(context, "PLZ ENABLE INTERNET", Toast.LENGTH_LONG).show()
+//                        }
                     }
 
                     val token = user.jwtToken!!
-                    viewModel.getProfileByToken(token).observe(viewLifecycleOwner, { profile ->
+                    viewModel.getProfileByToken(token).observe(viewLifecycleOwner) { profile ->
                         if (profile?.client_id != null) {
                             viewModel.setProfile(profile)
                         }
-                    })
+                    }
                 }
             }
-        })
+        }
 
 //        GlobalScope.launch(Dispatchers.Main) {
 //            delay(1000L)
