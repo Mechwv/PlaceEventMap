@@ -40,7 +40,7 @@ class ModeratorViewModel @Inject constructor(
 
         return liveData {
             val job = GlobalScope.launch(handler) {
-                val places = commonService.getPlaces(jwtToken)
+                val places = commonService.getModeratorPlaces(jwtToken)
                 Log.e("PLACES", places.toString())
                 emit(places)
             }

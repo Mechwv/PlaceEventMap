@@ -116,7 +116,7 @@ object Common {
         }
     }
 
-    suspend fun getPlaces(jwt_token: String): List<Place> {
+    suspend fun getModeratorPlaces(jwt_token: String): List<Place> {
         return suspendCancellableCoroutine { continuation ->
             serverService.getAllPlaces(auth= "Bearer $jwt_token").enqueue(object  : Callback<List<Place>> {
                 override fun onResponse(call: Call<List<Place>>, response: Response<List<Place>>) {
@@ -159,6 +159,29 @@ object Common {
                         Log.e("PLACE", t.message!!)
                         continuation.resumeWithException(t)
                     }
+            })
+        }
+    }
+
+    suspend fun getOnlinePlaces(jwt_token: String): List<Place> {
+        return suspendCancellableCoroutine { continuation ->
+            serverService.getOnlinePlaces(auth= "Bearer $jwt_token").enqueue(object  : Callback<List<Place>> {
+                override fun onResponse(call: Call<List<Place>>, response: Response<List<Place>>) {
+                    if (response.isSuccessful) {
+                        val placeResponse = (response.body() as List<Place>)
+                        continuation.resume(placeResponse)
+                        Log.e("PLACE INFO", placeResponse.toString())
+
+                    }
+                    if (continuation.isActive) {
+                        val exception = IllegalStateException(response.errorBody()?.string())
+                        continuation.resumeWithException(exception)
+                    }
+                }
+                override fun onFailure(call: Call<List<Place>>, t: Throwable) {
+                    Log.e("PLACE", t.message!!)
+                    continuation.resumeWithException(t)
+                }
             })
         }
     }

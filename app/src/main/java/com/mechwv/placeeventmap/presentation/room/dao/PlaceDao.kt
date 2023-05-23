@@ -20,4 +20,7 @@ abstract class  PlaceDao : BaseDao<DBPlaceDTO> {
 
     @Query("SELECT * FROM places")
     abstract fun getAll(): LiveData<List<DBPlaceDTO>>
+
+    @Query("DELETE FROM places")
+    abstract fun deleteAll()
 }

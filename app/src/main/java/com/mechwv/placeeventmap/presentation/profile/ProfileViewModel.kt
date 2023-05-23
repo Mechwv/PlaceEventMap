@@ -38,7 +38,18 @@ class ProfileViewModel @Inject constructor(
             }
             job.join()
         }
+    }
 
+    fun getOnlinePlaces(jwt_token: String): LiveData<List<Place>> {
+        return liveData {
+            val job = CoroutineScope(Dispatchers.IO).launch {
+                val result = commonService.getOnlinePlaces(jwt_token)
+                placesRepository.updateWithDownloadedValues(result)
+                Log.e("RESULT", result.toString())
+                emit(result)
+            }
+            job.join()
+        }
     }
 
     fun getDBPlaces(filter: String = "cringe"): LiveData<List<Place>> {

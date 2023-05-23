@@ -10,7 +10,10 @@ import com.mechwv.placeeventmap.domain.model.Place
 import com.mechwv.placeeventmap.presentation.retrofit.Common
 import com.mechwv.placeeventmap.presentation.retrofit.model.geoApi.GeoPlace
 import com.mechwv.placeeventmap.presentation.room.dto.DBEventDTO
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import okhttp3.Address
 import java.lang.Exception
 import java.util.concurrent.ExecutorService
@@ -82,6 +85,20 @@ constructor(
     override fun deletePlaces(place: List<Place>) {
         executorService.execute {
             placeDao.delete(place.map { DBPlaceDTO(it) })
+        }
+    }
+
+    suspend fun updateWithDownloadedValues(places: List<Place>) {
+        val job = CoroutineScope(Dispatchers.IO).launch {
+            placeDao.deleteAll()
+        }
+        job.join()
+        addPlaces(places)
+    }
+
+    fun deleteAll() {
+        executorService.execute {
+
         }
     }
 

@@ -25,6 +25,11 @@ interface ServerApi {
         @Body places: List<Place>
     ): Call<Boolean>
 
+    @GET("/places/download")
+    fun getOnlinePlaces(
+        @Header("Authorization") auth: String,
+    ) : Call<List<Place>>
+
     @GET("/places/all")
     fun getAllPlaces(
         @Header("Authorization") auth: String,

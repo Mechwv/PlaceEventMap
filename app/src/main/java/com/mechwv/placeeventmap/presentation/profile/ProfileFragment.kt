@@ -61,6 +61,14 @@ class ProfileFragment : Fragment() {
             }
         }
 
+        binding.download.setOnClickListener {
+            viewModel.getCurrentUser().observe(viewLifecycleOwner) { user ->
+                viewModel.getOnlinePlaces(jwt_token = user?.jwtToken!!).observe(viewLifecycleOwner) {
+                    println("ONLINE GOT RESULT $it")
+                }
+            }
+        }
+
 
         return binding.root
     }

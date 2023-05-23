@@ -1,7 +1,9 @@
 package com.mechwv.placeeventmap.domain.model
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 open class Place(
     @JsonProperty("id")
     open var id: Int = 0,
