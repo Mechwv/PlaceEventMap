@@ -139,6 +139,30 @@ object Common {
         }
     }
 
+    suspend fun saveCurrentPlaces(jwt_token: String, places: List<Place>): Boolean {
+        return suspendCancellableCoroutine { continuation ->
+            serverService.saveCurrentPlaces(auth = "Bearer $jwt_token", places = places)
+                .enqueue(object : Callback<Boolean> {
+                    override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
+                        if (response.isSuccessful) {
+                            val placeResponse = (response.body() as Boolean)
+                            continuation.resume(placeResponse)
+
+                        }
+                        if (continuation.isActive) {
+                            val exception = IllegalStateException(response.errorBody()?.string())
+                            continuation.resumeWithException(exception)
+                        }
+                    }
+
+                    override fun onFailure(call: Call<Boolean>, t: Throwable) {
+                        Log.e("PLACE", t.message!!)
+                        continuation.resumeWithException(t)
+                    }
+            })
+        }
+    }
+
     suspend fun authorizeOnServer(auth_token: String, role: String): Response<ServerApi.JWTstring> {
         return serverService.authorize(ServerApi.AuthDTO(auth_token, role))
     }

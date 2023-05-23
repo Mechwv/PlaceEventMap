@@ -27,7 +27,6 @@ class PlacesViewModel @Inject constructor(
             filteredPlaces
         }
         return fp
-//        return a
     }
 
     fun addPlace(place: Place) {

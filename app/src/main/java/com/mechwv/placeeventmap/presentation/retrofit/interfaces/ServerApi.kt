@@ -18,6 +18,13 @@ interface ServerApi {
         @Header("Authorization") auth: String,
     ) : Call<ProfileInfo>
 
+    @JvmSuppressWildcards
+    @POST("/places/save")
+    fun saveCurrentPlaces(
+        @Header("Authorization") auth: String,
+        @Body places: List<Place>
+    ): Call<Boolean>
+
     @GET("/places/all")
     fun getAllPlaces(
         @Header("Authorization") auth: String,

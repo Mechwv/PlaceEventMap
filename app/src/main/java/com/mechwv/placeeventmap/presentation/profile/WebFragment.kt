@@ -1,22 +1,17 @@
 package com.mechwv.placeeventmap.presentation.profile
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.CookieManager
-import android.webkit.WebView
-import android.webkit.WebViewClient
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.mechwv.placeeventmap.BuildConfig
 import com.mechwv.placeeventmap.databinding.WebFragmentBinding
+import com.mechwv.placeeventmap.util.SharedPrefsUtil
 import com.yandex.authsdk.YandexAuthException
 import com.yandex.authsdk.YandexAuthLoginOptions
 import com.yandex.authsdk.YandexAuthOptions
@@ -60,10 +55,14 @@ class WebFragment : Fragment() {
             try {
                 val yandexAuthToken = sdk.extractToken(resultCode, data)
                 if (yandexAuthToken != null) {
-                    viewModel.getProfile(yandexAuthToken.value).observe(viewLifecycleOwner) { result ->
-                        if (result != null) {
-                            val action = WebFragmentDirections.actionWebFragmentToProfileFragment()
-                            findNavController().navigate(action)
+                    viewModel.getJwtToken(yandexAuthToken.value).observe(viewLifecycleOwner) { jwtToken ->
+                        if (jwtToken != null) {
+                            SharedPrefsUtil.writeTokenIntoPreferences(context!!, jwtToken)
+                            viewModel.getProfile(jwtToken).observe(viewLifecycleOwner) {
+                                SharedPrefsUtil.readTokenFromPreferences(context!!)
+                                val action = WebFragmentDirections.actionWebFragmentToProfileFragment()
+                                findNavController().navigate(action)
+                            }
                         }
                     }
 
@@ -75,4 +74,6 @@ class WebFragment : Fragment() {
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
+
+
 }

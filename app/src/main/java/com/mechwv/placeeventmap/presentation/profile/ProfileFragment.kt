@@ -45,9 +45,20 @@ class ProfileFragment : Fragment() {
 
         binding.reviewPlaces.setOnClickListener {
             viewModel.getCurrentUser().observe(viewLifecycleOwner, { user ->
+                println("USER_MODERATOR_JWT: ${user?.jwtToken}")
                 val action = ProfileFragmentDirections.actionProfileFragmentToModeratorFragment2(user!!.jwtToken!!)
                 findNavController().navigate(action)
             })
+        }
+
+        binding.upload.setOnClickListener {
+            viewModel.getCurrentUser().observe(viewLifecycleOwner) { user ->
+                viewModel.getDBPlaces().observe(viewLifecycleOwner) { places ->
+                    viewModel.saveCurrentPlaces(jwt_token = user?.jwtToken!!, places = places).observe(viewLifecycleOwner) {
+                        println("ONLINE SAVE RESULT $it")
+                    }
+                }
+            }
         }
 
 
