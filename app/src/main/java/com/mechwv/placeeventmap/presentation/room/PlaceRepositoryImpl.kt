@@ -2,6 +2,7 @@ package com.mechwv.placeeventmap.presentation.room
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.room.Transaction
 import com.mechwv.placeeventmap.presentation.room.dto.DBPlaceDTO
 import com.mechwv.placeeventmap.presentation.room.dao.PlaceDao
 import com.mechwv.placeeventmap.data.repository.PlaceRepository
@@ -34,7 +35,7 @@ constructor(
         }
     }
 
-    @ExperimentalCoroutinesApi
+    @OptIn(ExperimentalCoroutinesApi::class)
     override suspend fun getAddress(place: Place): String {
         try {
             return  Common.getPlaceName(place = place).name
@@ -88,18 +89,9 @@ constructor(
         }
     }
 
-    suspend fun updateWithDownloadedValues(places: List<Place>) {
-        val job = CoroutineScope(Dispatchers.IO).launch {
-            placeDao.deleteAll()
-        }
-        job.join()
-        addPlaces(places)
-    }
-
-    fun deleteAll() {
-        executorService.execute {
-
-        }
+    @Transaction
+    fun updateWithDownloadedValues(places: List<Place>) {
+        placeDao.updateWithDownloadedValues(places)
     }
 
     override fun getPlaces(): LiveData<List<Place>> {

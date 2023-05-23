@@ -3,24 +3,32 @@ package com.mechwv.placeeventmap.presentation.room.dao
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Transaction
+import com.mechwv.placeeventmap.domain.model.Place
 import com.mechwv.placeeventmap.presentation.room.dto.DBPlaceDTO
 import com.mechwv.placeeventmap.presentation.room.BaseDao
 
 @Dao
-abstract class  PlaceDao : BaseDao<DBPlaceDTO> {
+interface  PlaceDao : BaseDao<DBPlaceDTO> {
 
     @Query("SELECT * FROM places where uid = :id")
-    abstract fun getOne(id: Int): LiveData<DBPlaceDTO>
+    fun getOne(id: Int): LiveData<DBPlaceDTO>
 
     @Query("update places set event_id = :event_id where uid = :id")
-    abstract fun updatePlaceEvent(id: Int, event_id: Long?)
+    fun updatePlaceEvent(id: Int, event_id: Long?)
 
     @Query("update places set location_name = :name where uid = :id")
-    abstract fun updatePlaceName(id: Int, name: String)
+     fun updatePlaceName(id: Int, name: String)
 
     @Query("SELECT * FROM places")
-    abstract fun getAll(): LiveData<List<DBPlaceDTO>>
+     fun getAll(): LiveData<List<DBPlaceDTO>>
 
     @Query("DELETE FROM places")
-    abstract fun deleteAll()
+     fun deleteAll()
+
+    @Transaction
+    fun updateWithDownloadedValues(places: List<Place>) {
+        deleteAll()
+        insert(places.map { DBPlaceDTO(it) })
+    }
 }
